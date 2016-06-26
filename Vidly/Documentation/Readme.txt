@@ -125,6 +125,7 @@ In controller in Random action we create List<Customer>
 	In view we change model to RMVM
 
 			/*	===	RAZOR VIEWS	===	*/
+
 <ul>
 @foreach(var customer in Model.Customers){
 	<li>@customer.Name</li>
@@ -145,3 +146,14 @@ In controller in Random action we create List<Customer>
 	}
 	<h2 class="@className">@Models.Movie.Name</h2>
 -Comments w/ razor: @* Comment *@ (can be multiple lines)
+
+			/*	===	PARTIAL VIEWS	===	*/
+
+Ctrl + M + M to (un)collapse a block of code.
+In Body we have @RenderBody() method - views are put here 
+PV are not only for shared markup, we can also breakdown large views
+Let's put navbar in partial view,
+In shared - add new view : _NavBar + create as partial view
+-We go to first line of navbar - press M 2x, ctrl X - paste in _NavBar
+-In _Layout
+@Html.Partial("_NavBar") - (as a second argument we could add a model...)
