@@ -34,4 +34,20 @@ public ActionResult Index(int? pageIndex,string sortBy)
 -W/ nullable parameter we can then use HasValue method:
 		if (!pageIndex.HasValue)
 
+			/*	===	CONVENTION-BASED ROUTES	===	*/
+
+-Imagine custom route where we can access movies by date and month:
+/movies/released/2015/04
+RouteConfig.cs
+-Must be defined from MOST SPECIFIC to MOST GENERIC
+Thus: before default:
+routes.MapRoute(
+	name: "MoviesByReleaseDate",
+	url: "movies/released/{year}/{month}"
+	default: new { controller="Movies", action="ByReleaseDate"  }
+);
+-Next we create an Action in Movies controller
+(Code snippet mvcaction4 + tab)
+
+
             
