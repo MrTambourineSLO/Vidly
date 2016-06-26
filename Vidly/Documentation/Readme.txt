@@ -157,3 +157,9 @@ In shared - add new view : _NavBar + create as partial view
 -We go to first line of navbar - press M 2x, ctrl X - paste in _NavBar
 -In _Layout
 @Html.Partial("_NavBar") - (as a second argument we could add a model...)
+
+
+			/*	===	EXERCISE	===	*/
+When passing optional anonymous objects through ActionLink, don't
+UNDER ANY CIRCUMSTANCES FORGET last null parameter!!!!!!!!!!!
+	@Html.ActionLink(movie.Name, "Details", "Movies",new{id = movie.Id},null)
