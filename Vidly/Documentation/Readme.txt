@@ -123,3 +123,25 @@ In controller in Random action we create List<Customer>
 	We initialize Movie property & Customers
 	Then we pass a viewModel to View
 	In view we change model to RMVM
+
+			/*	===	RAZOR VIEWS	===	*/
+<ul>
+@foreach(var customer in Model.Customers){
+	<li>@customer.Name</li>
+}
+</ul>
+-{} are necessay in for a single line in Razor!
+-We could also add a conditional before our ul such as:
+	@if(Model.Customers.Count == 0){
+	<p>No one has rented this movie before</p>
+	}
+	else{
+		<ul> (from above)
+	}
+-We can also conditonally ADD CLASSES to TAGS in HTML
+-Say if movie was rented at least 5 times it's popular
+	@{
+		var className = Model.Customers.Count > 5 ? "popular" : null;
+	}
+	<h2 class="@className">@Models.Movie.Name</h2>
+-Comments w/ razor: @* Comment *@ (can be multiple lines)
