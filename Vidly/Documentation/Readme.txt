@@ -101,7 +101,25 @@ Ways to pass:
 	-The only resonable way is to pass movie object to way as by default.
 (With R# - > View F12)
 			
-			
-			
-			
-			/*	===	ATTRIBUTE ROUTING	===	*/
+			/*	===	VIEW-MODELS	===	*/
+
+So far we can only display say name of the movie.
+-What if we also had to disply list of customers who rented the movie?
+	In our domain model there may not be a releationship between 
+	the customer and the movie classes.
+	We need to pass two different models to the view, but we only have 
+	1 model in a view.
+*ViewModel = model SPECIFICALY BUILT for a VIEW.
+[EXAMPLE]
+-We add a customer class to our model
+	props: Name,Id
+-In Models folder we only have domain classes, so we make a new folder
+ViewModels.
+-Here add new class RandomMovieViewModel
+We need 2 props: Movie (Movie) and List<Customer> (Customers)
+In controller in Random action we create List<Customer>
+	Object initialization syntax to add 2 customers (Customer1 and 2(just name))
+-We create VM object
+	We initialize Movie property & Customers
+	Then we pass a viewModel to View
+	In view we change model to RMVM
