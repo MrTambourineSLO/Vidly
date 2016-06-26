@@ -58,4 +58,26 @@ new {year = @"\d{4}", month = @"\d{2}"}
 	-We could also specify that only two values are legal:
 	eg new{year = @"2015|2016"} (only 2015 or 2016)
 
-            
+            /*	===	ATTRIBUTE ROUTING	===	*/
+					(recommended way)
+If we have large app - custom routes will become a mess in RouteConfig.cs
++We have to go back&forth between actions and routes
++If we rename a cotnroller we have to manually rename action in route
+-We have an ATTRIBUTE 
+1st we have to enable them in RouteConfig: routes.MapMvcAttributeRoutes();
+	-we delete our convetion route
+2nd in controller [Route("movies/released/{year}/{month}")]
+3rd APPLY CONSTRAINTS: 
+	[Route("movies/released/{year}/{month:regex(\\d{4}}")] 
+	-Here we repeat backslash (\) because we cannot use @ for escape character this way
+4th APPLY ADDITIONAL CONSTRAINTS:
+	{month:regex(\\d{4}):range(1,12)}")
+	
+	OTHER CONSTRAINTS:
+	-min
+	-max
+	-minlenght
+	-max--
+	-int
+	-float
+	-guid
