@@ -13,8 +13,14 @@ namespace Vidly.Controllers
         public ActionResult Random()
         {
             var movie = new Movie(){Name = "Shrek"};
-            
-            return View(movie);
+            /*Diffferent type of ARs*/
+            //We can aslo return ViewResult()
+            //return View(movie);
+            //return Content("Hello world!");
+            //return HttpNotFound();
+            //return new EmptyResult();
+            return RedirectToAction("Index", "Home",new {page = 1, sortBy="name"});
+
         }
     }
 }
