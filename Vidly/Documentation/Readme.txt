@@ -163,3 +163,5 @@ In shared - add new view : _NavBar + create as partial view
 When passing optional anonymous objects through ActionLink, don't
 UNDER ANY CIRCUMSTANCES FORGET last null parameter!!!!!!!!!!!
 	@Html.ActionLink(movie.Name, "Details", "Movies",new{id = movie.Id},null)
+
+Instructor ver. found at github.com/mosh-hamedani/

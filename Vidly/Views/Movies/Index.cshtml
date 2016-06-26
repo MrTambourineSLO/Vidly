@@ -1,5 +1,5 @@
 ﻿@using Vidly.Models
-@model List<Vidly.Models.Movie>
+@model IEnumerable<Vidly.Models.Movie>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,20 +9,26 @@
 
 
 <table class="table table-bordered table-hover">
+    <thead>
     <tr>
-        <th>Movie Title</th>
+        Movie Title
     </tr>
-    @foreach (var movie in Model)
-    {
-        <tr>
-            @*Add action links to movie page*@
-            @*<td>@movie.Name</td>*@
-            <td>
-                @Html.ActionLink(movie.Name, "Details", "Movies",new{id = movie.Id},null)
-            </td>
-        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movie in Model)
+        {
 
-    }
+            <tr>
+                @*Add action links to movie page*@
+                @*<td>@movie.Name</td>*@
+                <td>
+                    @Html.ActionLink(movie.Name, "Details", "Movies", new { id = movie.Id }, null)
+                </td>
+            </tr>
+
+
+        }
+    </tbody>
 
 </table>
 
