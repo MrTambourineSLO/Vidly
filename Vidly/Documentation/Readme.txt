@@ -14,3 +14,24 @@ we can combine & compress frontend files which results in faster loads
 (that's a good practice for unit testing since it saves us some casting)
 -In some cases it's possible to have different execution paths in action and return different
 action results - in that case we have return type ActionResult
+
+			/*	===	ACTION PARAMETERS	===	*/
+
+-Sources - in URL(/movies/edit/1)
+		- in query string(movies/edit?id=1)
+		- In form data(id = 1)
+-Default name of value we pass (such as id as opposed to movieId) is also defined in our route
+configuration (which is named "id")
+
+OPTIONAL PARAMETERS:
+
+public ActionResult Index(int? pageIndex,string sortBy)
+{
+            
+}
+-We put questionmark after builtin types to indicate they're "NULLABLE" - not required
+-Reference types are nullable by default, so there's no need for ? after string.
+-W/ nullable parameter we can then use HasValue method:
+		if (!pageIndex.HasValue)
+
+            
