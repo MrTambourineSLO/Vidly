@@ -81,3 +81,27 @@ If we have large app - custom routes will become a mess in RouteConfig.cs
 	-int
 	-float
 	-guid
+
+			/*	===	PASSING DATA TO VIEWS	===	*/
+
+Ways to pass:
+	-return View(model);
+	-ViewData["Movie"] = movie;
+		Every contoller has property ViewData of type ViewDataDictionary
+		which we can use accordingly (we still have to return an 
+		(empty) View!)
+		In VIEW - instead of @Model property we have to use @ViewData["Movie"]
+		*Beware: each item in Dictionary is of type object!
+		*There's a problem w/ magic string ["Movie"] and casting w/ ViewData dict!
+	-ViewBag
+		ViewBag.Movie = movie;
+		Beware - Movie property is "magic" & it's added at runtime
+		(so no compile time safety)!!!
+		Casting issue as well.
+	-The only resonable way is to pass movie object to way as by default.
+(With R# - > View F12)
+			
+			
+			
+			
+			/*	===	ATTRIBUTE ROUTING	===	*/

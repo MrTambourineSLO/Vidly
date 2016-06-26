@@ -13,7 +13,8 @@ namespace Vidly.Controllers
         public ActionResult Random()
         {
             var movie = new Movie(){Name = "Shrek"};
-            return View(movie);
+            ViewData["Movie"] = movie;
+            return View();
 
         }
         [Route("movies/released/{year:regex(\\d{4})}/{month:regex(\\d{2}):range(1,12)}")]
