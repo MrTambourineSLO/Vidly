@@ -48,6 +48,14 @@ routes.MapRoute(
 );
 -Next we create an Action in Movies controller
 (Code snippet mvcaction4 + tab)
+ADDING CONSTRAINTS:
+-In RouteConfig.cs
+We add a new argument - new anonymous method where we can use RegEx
 
+new {year = @"\d{4}", month = @"\d{2}"}
+	-@ is because we have escape characters in RegEx
+	-\d means digit /  {contstraint} = number of digits
+	-We could also specify that only two values are legal:
+	eg new{year = @"2015|2016"} (only 2015 or 2016)
 
             
