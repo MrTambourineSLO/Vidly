@@ -63,3 +63,51 @@ In PMC(ps commands are not case sensitive)
 		>> Solution Exprlorere -> Show all Files -> App_Data we have DB File
 			>>> BTW: Here we can also see table _MigrationHistory w/ all migrations
 
+			/*	===		CHANGING THE MODEL	===*/
+
+- > In Customer.cs in Models we'll add more complexity
+	>> We'll add IsSubscribedToNewsLetter and MembershipType
+	>> MembershipType business rules:
+		>>> Membership type: Pay as you go
+		>>> Sign Up Fee: Free
+		>>> Discount: 0%
+		-----------------
+		>>> Membership type: Monthly
+		>>> Sign Up Fee: 30$
+		>>> Discount: 10%
+		-----------------
+		>>> Membership type: Quarterly
+		>>> Sign Up Fee: 90$
+		>>> Discount: 15%
+		-----------------
+		>>> Membership type: Annual
+		>>> Sign Up Fee: 300$
+		>>> Discount: 20%
+	>> To model this we need a new class MembershipType with
+		appropriate properties as seen above
+		>>> Each customer should have only 1 MembershipType
+	>> To make this changes we should aim for SMALL MIGRATIONS instead
+		of doing it all in one big go.
+	>> With BigBang migration we increase a risk of things going wrong
+		(one of the reasons many devs who try CF workflow fail)
+		>>> We should treat those migrations like git commits
+- > In Customers.cs we add new bool prop IsSubscibedToNewsLetter
+	>> Add migration w/ name AddIsSubscribedToCustomer
+	>> Update DB
+- > Add new class MembershipType
+	>> Props:
+		>>> short SignupFees
+		>>> byte DurationInMonths (because top value is 12(months))
+		>>> byte Percentage (between 0-100)
+	>> In EF every entity must have a key (PK in DB)
+		>>> Name convention: Either "id" or "nameOfTheType+Id"
+			>>> Thus prop byte Id (we have only few membership types)
+- > Now we need to associate customer w/ membership type
+	>> Customer - new prop MembershipType - MembershipType (this is so called
+	navigation property - it allows us to navigate from one type to another)
+	>> Sometimes for optimization we don't want to load entire membershiptype
+		but just - say - FK 
+		>>> new prop - byte MembershipTypeId (EF recognizes this convention
+		and treats it as a FK)
+- > Add migration (AddMembershipType)
+- > Update DB
