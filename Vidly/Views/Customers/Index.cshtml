@@ -8,13 +8,21 @@
 @if (Model.Any()) 
 { 
     <table class="table table-bordered table-hover">
-        <thead><tr>Name</tr></thead>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Discount Rate</th>
+            </tr>
+        </thead>
         <tbody>
             @foreach (var customer in Model)
             {
                 <tr>
                     <td>
-                        @Html.ActionLink(customer.Name, "Details", "Customers", new { id = customer.Id }, null)
+                        @Html.ActionLink(customer.Name, "Details", "Customers", new {id = customer.Id}, null)
+                    </td>
+                    <td>
+                        @customer.MembershipType.DiscountRate%
                     </td>
                 </tr>
 

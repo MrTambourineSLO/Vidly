@@ -140,6 +140,46 @@ In our Customers table Name is nullable w/ Nvarchar of max
 - > This is called data annotations
 - > We change DM - ego in PM> add DB-Migration (applyanotationstocustomername)
 - > update DB
-		
 
-            
+			/*	===		QUERYING OBJECTS W/ EF	===*/
+
+In CustomersController we want to get rid of hardcoded List<Customer> and get it from a DB
+- > We need a DBContext to access the db
+	>> Declare a private field ApplicationDbContext _context;
+	>> We init it in CTOR
+	ctor CustomerController(){
+		_context = new ApplicationDbContext();
+	}
+	>> This DBC is disposable obj, so we need to dispose it:
+		>>> We do it by overriding base controllers Dispose class
+			_context.Dispose();
+		(Later we'll handle this w/ dependency injection)
+	>> In index action insted of calling GetCustomers()
+		We'll init customers by calling _context.Customers;
+		This Customers property is a DbSet defined in our DbContext
+    >> We need to know about DEFERRED EXECUTION:
+		>>> when we call _context.Customer; EF will not query the DB
+		just yet, rather it will do it for example in the VIEW when WE ITERATE over it.
+		>>> We can also IMMEDIATELY exec the query by calling it's ToList() method
+			_context.Customers.ToList();
+	>> In Details action we also replace GetCustomers() w/ _context.Customers
+		>>> Because we call SingleOrDefault on it, execution WILL NOT BE DEFERRED
+	>> We get rid of GetCustomers()
+	>> We populate Db for Customers table directly in DB
+		(as opposed to previous lecture we can do that, because it's not reference data
+		Here we're working with "development" DB, so customers don't matter
+		on Deployment DB we only deploy the migrations. This arbtraray customer
+		data won't be deployed to the DB on Deployment  )
+
+			/*	===		EAGER LOADING	===*/
+-> If we want to display for example what Discount Rate a Customer has on a 
+view:
+	<td>@customer.MembershipType.DiscountRate</td>
+	>> We will get an null reference exception
+		>>> By default EF only loads CUSTOMER object not their RELATED OBJECTS
+	>> To solve this:
+		>>> We need to perform eager loading
+		>>>	In Index action when referencing Customers we use .Include(c => c.MembershipType)
+			*This is defined in System.Data.Entity.
+
+
