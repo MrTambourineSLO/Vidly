@@ -111,3 +111,25 @@ In PMC(ps commands are not case sensitive)
 		and treats it as a FK)
 - > Add migration (AddMembershipType)
 - > Update DB
+
+			/*	===		SEEDING THE DATABASE	===*/
+
+We need to populate MembershipTypes table w/ some records
+Our development, production and testing DB should ALL HAVE exact same types!
+- > While using Code-First we SHOULD NOT TOUCH Db at all!
+	All should go through migration
+- > PM> add-migration PopulateMembershipTypes
+	>> In migrations we now have EMPTY migration
+		>>> in Up() we can call
+			Sql("INSERT INTO MembershipTypes (Id,SignupFee, DurationInMonths, DiscountRate)
+			VALUES (1,0,0,0")
+			Sql("INSERT INTO MembershipTypes (Id,SignupFee, DurationInMonths, DiscountRate)
+			VALUES (2,30,1,10")
+			Sql("INSERT INTO MembershipTypes (Id,SignupFee, DurationInMonths, DiscountRate)
+			VALUES (3,90,3,15")
+			Sql("INSERT INTO MembershipTypes (Id,SignupFee, DurationInMonths, DiscountRate)
+			VALUES (4,300,12,20")
+		>>> PM> update-database
+		
+
+            
