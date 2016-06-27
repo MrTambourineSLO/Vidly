@@ -130,6 +130,16 @@ Our development, production and testing DB should ALL HAVE exact same types!
 			Sql("INSERT INTO MembershipTypes (Id,SignupFee, DurationInMonths, DiscountRate)
 			VALUES (4,300,12,20")
 		>>> PM> update-database
+
+			/*	===		OVERRIDING CONVENTIONS	===*/
+
+In our Customers table Name is nullable w/ Nvarchar of max
+- > Overriding this conventions:
+	>>	Models - above Name prop attribute [Required] - ie Not Nullable
+		>>> [StringLength(255)] -max of 255 chars 
+- > This is called data annotations
+- > We change DM - ego in PM> add DB-Migration (applyanotationstocustomername)
+- > update DB
 		
 
             
