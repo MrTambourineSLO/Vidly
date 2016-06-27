@@ -1,0 +1,65 @@
+﻿			/*	===		ENTITY FRAMEWORK	===*/
+
+-ORM> middleman between Objects and Relational DB
+-Before we had to manually open a connection to a DB, executing command, reading data
+and closing a connection
+-EF provides class called *DbContext* (gateway to our DB)
+	Each *DbContext* has 1..* DbSets
+	DbSets represent TABLES in our DB
+-We use LINQ to Query DBSet
+	EF translates Linq queries to SQL queries at runtime
+-TWO WORKFLOWS:
+	DB 1st
+	Code 1st
+
+			/*	===		DB 1st vs. CODE 1st	===*/
+
+
+Traditionally - create DB and have EF create DOMAIN CLASSES (DB 1st)
+Or we start w/ Domain Classes -> EF -> DB
+PROS of CODE 1st:
+	*Increased productivity - much faster to write code
+	(ie many additional clicks when using table designers)
+	*We don't have to manually create migration scipts.
+	*We have FULL VERSIONING of DB (ie Migrations)
+	*Integration TESTS are super simple (3 lines of code)
+	*Can also be used on legacy DBs
+
+			/*	===		CODE-FIRST MIGRATIONS	===*/
+
+
+In CF we start w/ a CODE -> any time we modify our Domain Model we create a MIGRATION
+and then RUN IT on a DB.
+In PMC(ps commands are not case sensitive) 
+	- > 1st time we run them we 1st have to enable them:s
+		enable-migrations
+	- > In SOLUTION EXPLORER we have a new Folder "Migrations"
+		(all our migrations will be stored here)
+	- > Create our 1st Migration:
+		PM> add-migration InitialModel
+		(we have to add it, because it's our first and then name it however we 
+		want - since it's first we name it InitialModel) 
+	- > Under MIGRATIONS we now have a new C# class
+		>> In this class we see the creation of ASP.NET IDENTITY tables
+			which our project uses for Authorization & Authentication
+			(We can see them under Models-IdentityModels.cs)
+		>> If we look @ IdentityModels.cs we see:
+			 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+			 ...
+			 >>> Derives from IdentityDbContext-> this is DBContext (ie gateway to
+			 our DB) - it's a part of ASP.NET Identity Framework
+			 >>> When we executed a migration EF looked at our DBContext and discovered
+			 DBSets in IdentityDbContext which reference classes like:
+				User, Role &c
+		>> In 201606270738149_InitialModel.cs we don't see any references to
+			our Domain Classes - because they're not REFERENCED by our DBCONTEXT
+	- > Let's add our customer table to DB
+		>> in IdentityModels in ApplicationDbContext we add prop DBSet<Customer> Customers
+			>>>	This represents customers table in our DB
+		>> Now PM> add-migration InitialModel -force
+			(force because it already exists)
+		>> In our Migration class we see command to add table customers
+		>> PM> update-database
+		>> Solution Exprlorere -> Show all Files -> App_Data we have DB File
+			>>> BTW: Here we can also see table _MigrationHistory w/ all migrations
+
