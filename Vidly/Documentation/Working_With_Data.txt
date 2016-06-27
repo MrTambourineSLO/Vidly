@@ -182,4 +182,23 @@ view:
 		>>>	In Index action when referencing Customers we use .Include(c => c.MembershipType)
 			*This is defined in System.Data.Entity.
 
+			/*	===		PMC>	===*/
+
+Custom shortcut for PM> Alt // 
+			
+			/*	===		EXERCISE 1	===*/
+1) In list of customers replace Discount rate from percentage to Words (Pay as You go, Monthly...)
+	-We need to add Name to membership type - 1st in domain class 
+	-We need to add another migration to update existing records in DB(SQL method)
+	 (Insted of INSERT we'll use UPDATE)
+-> SOLUTION:
+	>> We update MembershipType model with prop string MembershipName
+	>> We add a migration & Update DB
+	>> We create new migration to update our new column
+	>> in Up() method we write
+			Sql("UPDATE MembershipTypes SET MembershipName = 'Pay as You Go' WHERE DiscountRate=0;");
+            Sql("UPDATE MembershipTypes SET MembershipName = 'Monthly' WHERE DiscountRate=10;");
+            Sql("UPDATE MembershipTypes SET MembershipName = 'Quarterly' WHERE DiscountRate=15;");
+            Sql("UPDATE MembershipTypes SET MembershipName = 'Annual' WHERE DiscountRate=20;");
+	>> Run DB Update
 
