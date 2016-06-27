@@ -194,6 +194,22 @@
     <Compile Include="Migrations\201606271455022_UpdateDbWithMembershipName.Designer.cs">
       <DependentUpon>201606271455022_UpdateDbWithMembershipName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606271522515_AddBirthdayToCustomer.cs" />
+    <Compile Include="Migrations\201606271522515_AddBirthdayToCustomer.Designer.cs">
+      <DependentUpon>201606271522515_AddBirthdayToCustomer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606271612590_ChangedBirthdayToNullable.cs" />
+    <Compile Include="Migrations\201606271612590_ChangedBirthdayToNullable.Designer.cs">
+      <DependentUpon>201606271612590_ChangedBirthdayToNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606271634076_AddedDataAnnotationCustomer.cs" />
+    <Compile Include="Migrations\201606271634076_AddedDataAnnotationCustomer.Designer.cs">
+      <DependentUpon>201606271634076_AddedDataAnnotationCustomer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606271748268_AddedAnotherAnotationToCustomer.cs" />
+    <Compile Include="Migrations\201606271748268_AddedAnotherAnotationToCustomer.Designer.cs">
+      <DependentUpon>201606271748268_AddedAnotherAnotationToCustomer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -302,6 +318,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606271455022_UpdateDbWithMembershipName.resx">
       <DependentUpon>201606271455022_UpdateDbWithMembershipName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606271522515_AddBirthdayToCustomer.resx">
+      <DependentUpon>201606271522515_AddBirthdayToCustomer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606271612590_ChangedBirthdayToNullable.resx">
+      <DependentUpon>201606271612590_ChangedBirthdayToNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606271634076_AddedDataAnnotationCustomer.resx">
+      <DependentUpon>201606271634076_AddedDataAnnotationCustomer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606271748268_AddedAnotherAnotationToCustomer.resx">
+      <DependentUpon>201606271748268_AddedAnotherAnotationToCustomer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

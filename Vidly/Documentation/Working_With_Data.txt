@@ -202,3 +202,9 @@ Custom shortcut for PM> Alt //
             Sql("UPDATE MembershipTypes SET MembershipName = 'Annual' WHERE DiscountRate=20;");
 	>> Run DB Update
 
+			/*	===		EXERCISE 2	===*/
+
+In customer details page ul - Membership type & Birthdate
+John has a birthdate
+Mary doesn't (it's a nullable column) [Nullable DateTime]
+

@@ -17,5 +17,7 @@ namespace Vidly.Models
         public MembershipType MembershipType { get; set; }
         //EF know below is FK by convention
         public byte MembershipTypeId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyy}")]
+        public DateTime? Birthday { get; set; }
     }
 }
