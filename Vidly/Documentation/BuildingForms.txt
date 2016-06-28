@@ -35,4 +35,14 @@
 		>>> CSS - Forms - We'll see declaration for checkbox and replace it w/ bootstrap ver.
 		(It's in it's own group and doesn't require LabelFor') then we delete old form-group for checkbox
 		>>> We replace  <input type="checkbox">  with @Html.ChekBoxFor(lambda)
-		
+	
+
+			/*	===		LABELS	===	*/	
+
+We can see in our form that name of the label is exactly the same as name of the property
+- > To display other tag:
+	1) in Customer class - [Display(Name = "Date of Birth")]
+		Problem: We have to recompile the code
+	2) We can also manually add a label 
+		We don't get FOCUS BEHAVIOUS (ie clicking label highlits input)
+		Unless we manually add a for="idOfInputField"
