@@ -46,3 +46,40 @@ We can see in our form that name of the label is exactly the same as name of the
 	2) We can also manually add a label 
 		We don't get FOCUS BEHAVIOUS (ie clicking label highlits input)
 		Unless we manually add a for="idOfInputField"
+
+			/*	===		DROP-DOWN LISTS	===	*/	
+
+- > Dropdown to select a membership type 
+- > in New - get membershipTypes (first we have to add DbSet<MembershipType> in IdentityModels.cs)
+	ToList() and pass it to view
+- > Since we have to pass both customer and MembershipType objects to view we have to create new VM
+	>>	ViewModels - Add New Class -> NewCustomerViewModel
+		>>>	Here we need list of membership types - prop (Either List or IEnumerable)
+			>>> BEWARE: Since in view we don't need any functionality provided by List (adding,removing...)
+			All we need is way to iterate - Which is IEnumerable
+			+If we were ever to replace Lsit with other collection it wouldn't be a problem, as long
+			as that collection implements IEnumerable as well (this way our code is more loosely coupeled)
+		>>> We need also properties of our new Customer
+			prop Customer Customer
+			In large apps we sometimes how we present entity can be different from how 
+			it's defined in domain model.
+			For us it's better to use damain as it is.
+	>> In New()
+		>>> var viewModel = new NewCustomerViewModel{
+			MembershipTypes = membershipTypes;}
+	Then we pass it to the view
+	We change type of model in the view
+- > To add a dropdown list:
+	>> form-group:
+		>> LabelFor (MembershipTypeId)+ insted of TextBoxFor
+		>> DropDownListFor (m => m.Customer.MembershipType,)
+			>>> Second argument has to be list of items supplied to dropdown
+				,new SelectList(Model.MembershipTypes)
+				SelectList is one of the types in MVC to init ddl
+			>>> Third: name of the property in MembershipTypes class that
+			holds the value for each item ("Id")
+			>>> Fourth: Property that hold text for each item ("Name")
+		>> After SelectList we add third property of "" this will add blank
+		item at top of our dropdown list
+		(Or we could add "Select Membership Type ")
+		>> Last argument is a class as before (form-control)
