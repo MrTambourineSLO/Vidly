@@ -83,3 +83,19 @@ We can see in our form that name of the label is exactly the same as name of the
 		item at top of our dropdown list
 		(Or we could add "Select Membership Type ")
 		>> Last argument is a class as before (form-control)
+
+			/*	===		MODEL BINDING	===	*/	
+
+Form is ready - now bonding & implement saving a customer
+-> View - in Form - <button> type="subnit" + few BS classes "btn" "btn-primary" Save
+- > Earlier we set name of targetAction to "Create"
+-> In Controller
+	>> AM Create() [HttpPost] - If actions modify data they should never respond to HTTPGET
+	>> It takes NewCustomerViewModel - that's because that's type of model in a view
+		EF will automatically map request data to this object!!! - that's called MODEL BINDING
+		We can also take argument Customer customer - since all fields in form were prefixed
+		with Customer. EF is smart enough to know how to bind those data
+		//PS: If we inspect WebPage we can see what data is sent to the server
+		by networking traffic
+		
+
