@@ -208,3 +208,26 @@ In customer details page ul - Membership type & Birthdate
 John has a birthdate
 Mary doesn't (it's a nullable column) [Nullable DateTime]
 
+			/*	===		EXERCISE 3	===*/
+
+Populate list of movies w/ movies from a DB
+(Hangover,DIe Hard, Terminator, Toy Story, TItanic)
+Add new column Genre
+(comedy,action,action,family,romance)
+	>> Similar to membership type Genre is reference data that
+		needs to be deployed w/ our application
+		(Use migrations!)
+	>> Details [All required!]:
+		Genre:
+		Release Date
+		Date Added
+		Number in Stock
+- > First: DbSet<Movie> in ApplicationDbContext
+	(If movie class isn't referenced in dbc it won't be included in migrations)
+- > Add additional properties in Movie(Genre...)
+- > Migration to populate Genre table
+	>> Sql("INSERT INTO Genre(Id, GenreName) VALUES (1,Action)");
+	....
+- > Finally add changes in movies controller & corresponding views
+	>> Beware to "Include(g => g.Genre)" when sending elements to view
+

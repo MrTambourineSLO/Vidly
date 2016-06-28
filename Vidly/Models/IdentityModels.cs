@@ -20,7 +20,11 @@ namespace Vidly.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        //Include our DbSet in DbContext to include it in migrations
         public DbSet<Customer> Customers { get; set; }
+        
+        public DbSet<Movie> Movies { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

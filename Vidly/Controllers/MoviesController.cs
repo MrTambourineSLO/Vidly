@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
@@ -11,38 +12,15 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        // GET: Movies/Random
-        //public ActionResult Random()
-        //{
-        //    var movie = new Movie(){Name = "Shrek"};
-        //    //Create a list of cutomers
-        //    var customers = new List<Customer>()
-        //    {
-        //        new Customer{Name = "Customer1"},
-        //        new Customer{Name = "Customer2"}
-        //    };
-        //    //Instantiate a new VM
-        //    var viewModel = new RandomMovieViewModel
-        //    {
-        //        Customers = customers,
-        //        Movie = movie
-        //    };
+      
+        private ApplicationDbContext _context;
 
-
-        //    return View(viewModel);
-
-        //}
-        //public List<Movie> movies = new List<Movie>()
-        //    {
-        //        new Movie{Id = 1,Name = "Shrek"},
-        //        new Movie{Id = 2,Name = "Wall-E"}
-        //    };
-        
-        [Route("movies/released/{year:regex(\\d{4})}/{month:regex(\\d{2}):range(1,12)}")]
-        public ActionResult ByReleaseDAte(int year, int month)
+        public MoviesController()
         {
-            return Content(year +"/" + month );
+            _context = new ApplicationDbContext();
         }
+
+       
 
         public ActionResult Edit(int id)
         {
@@ -51,14 +29,14 @@ namespace Vidly.Controllers
 
         public ActionResult Index()
         {
-            var movies = GetMovies();
+            var movies = _context.Movies.Include(c => c.Genre);
 
             return View(movies);
         }
         [Route("movies/details/{id}")]
-        public ActionResult Details(int id)
+        public ActionResult Details(byte id)
         {
-            var movie = GetMovies().SingleOrDefault(p => p.Id == id);
+            var movie = _context.Movies.Include(g => g.Genre).SingleOrDefault(m => m.Id == id);
             if (movie == null)
             {
                 return HttpNotFound();
@@ -68,13 +46,6 @@ namespace Vidly.Controllers
 
         }
 
-        private IEnumerable<Movie> GetMovies()
-        {
-            return new List<Movie>()
-            {
-                new Movie{Id = 1,Name = "Shrek"},
-                new Movie{Id = 2,Name = "Wall-E"}
-            };
-        } 
+      
     }
 }

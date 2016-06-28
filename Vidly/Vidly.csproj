@@ -210,9 +210,18 @@
     <Compile Include="Migrations\201606271748268_AddedAnotherAnotationToCustomer.Designer.cs">
       <DependentUpon>201606271748268_AddedAnotherAnotationToCustomer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606281156165_AddGenreAndUpdateMovieDom.cs" />
+    <Compile Include="Migrations\201606281156165_AddGenreAndUpdateMovieDom.Designer.cs">
+      <DependentUpon>201606281156165_AddGenreAndUpdateMovieDom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606281157167_PopulateGenres.cs" />
+    <Compile Include="Migrations\201606281157167_PopulateGenres.Designer.cs">
+      <DependentUpon>201606281157167_PopulateGenres.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MembershipType.cs" />
@@ -330,6 +339,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606271748268_AddedAnotherAnotationToCustomer.resx">
       <DependentUpon>201606271748268_AddedAnotherAnotationToCustomer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606281156165_AddGenreAndUpdateMovieDom.resx">
+      <DependentUpon>201606281156165_AddGenreAndUpdateMovieDom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606281157167_PopulateGenres.resx">
+      <DependentUpon>201606281157167_PopulateGenres.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

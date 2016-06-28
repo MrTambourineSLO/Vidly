@@ -10,19 +10,22 @@
 
 <table class="table table-bordered table-hover">
     <thead>
-    <tr>
-        Movie Title
-    </tr>
+        <tr>
+            <th >Movie Title</th>
+            <th>Genre</th>
+        </tr>
+        
     </thead>
     <tbody>
         @foreach (var movie in Model)
         {
 
             <tr>
-                @*Add action links to movie page*@
-                @*<td>@movie.Name</td>*@
                 <td>
-                    @Html.ActionLink(movie.Name, "Details", "Movies", new { id = movie.Id }, null)
+                    @Html.ActionLink(movie.Name, "Details", "Movies", new {id = movie.Id}, null)
+                </td>
+                <td>
+                    @movie.Genre.GenreName
                 </td>
             </tr>
 
