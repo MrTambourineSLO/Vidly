@@ -231,3 +231,4 @@ Add new column Genre
 - > Finally add changes in movies controller & corresponding views
 	>> Beware to "Include(g => g.Genre)" when sending elements to view
 
+- > DON'T FORGET DISPOSE OVERRIDE WHEN CREATING CONTEXT IN CONTROLLER
