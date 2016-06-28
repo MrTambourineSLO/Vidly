@@ -98,4 +98,16 @@ Form is ready - now bonding & implement saving a customer
 		//PS: If we inspect WebPage we can see what data is sent to the server
 		by networking traffic
 		
+			/*	===		SAVING DATA	===	*/
 
+->To add Customer to DB, 1st we need to add it to DbContext
+	>> _context.Customers.Add(customer);
+		>>>	At this point it isn't written into the DB yet, it's just
+		in memory
+	>> Each time we modify, add, remove objects (existing or otherwise)
+	DbCOntext will mark them as ADDED, MODIFIED or DELETED
+	>> To PERSIST changes we need to call SaveChanges() on context
+	- At runtime DbC will wrap all changes in transaction and (try to)
+	write them in a DB, so either all or none will get persisted.
+	>> We need to redirect user to list of customers
+	return RedirectToAction("Index","Customers")
