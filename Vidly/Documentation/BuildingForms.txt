@@ -1,0 +1,38 @@
+﻿			/*	===		BUILDING FORMS	===	*/
+			/*	===		THE MARKUP	===	*/
+
+- > To create a Form to add Customers, 
+	>> We need an ACTION that RETURNS a view w/ FORM
+- > Customers Controller
+	>> prop mvcaction4 New{
+		
+	}
+	Add view
+	>> Title = new customer
+	>> Now we'll use few HTML helper methods:
+	>> Html.BeginForm("NameTargetAction","NameTargetControl")
+		>>> In our example Html.BeginForm("Create","Customers")
+		BeginForm just begins a form ie <form>
+		How Do we render the closing tag???
+		>>>BeginForm returns a Disposable object, if we wrap call
+		to this function in @using() block - at the end the object
+		returned from BeginForm will be disposed
+		In Dispose() method it will simply return </form>!!!IMPORTANT!!!
+	>> There's a special markup we need to follow to follow modern,responsive forms (BS)
+		>>> We wrap each input field in a div w/ class "form-group"
+		>>> Inside we need label and input field
+		>>> We can use @Html.LabelFor()
+			>>>> It accepts lambda that specifies the name of the target property in a model
+			ETGO (m => m.Name)
+		>>> @Html.TextBoxFor(lambda - again n => n.Name,secondProperty)
+			secondProperty -> anonymous object and any properties here will be rendered as html attributes
+				eg new {@class = "form-control"} - this is BS class that gives forms modern look and feel
+			BEWARE -> Forms accept data annotations on our models an map them to form accordingly
+	>> We duplicate the form field for Birthdate
+	>> Duplicate again, but insted of TextBoxFor we'll use CheckBoxFor (m => m.IsSubscribedToNewsletter)
+	>> Rendering checkboxes w/ BS:
+		>>> GetBootstrap.com
+		>>> CSS - Forms - We'll see declaration for checkbox and replace it w/ bootstrap ver.
+		(It's in it's own group and doesn't require LabelFor') then we delete old form-group for checkbox
+		>>> We replace  <input type="checkbox">  with @Html.ChekBoxFor(lambda)
+		
