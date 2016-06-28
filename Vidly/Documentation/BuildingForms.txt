@@ -111,3 +111,33 @@ Form is ready - now bonding & implement saving a customer
 	write them in a DB, so either all or none will get persisted.
 	>> We need to redirect user to list of customers
 	return RedirectToAction("Index","Customers")
+		
+		/*	===		EDITING FORMS	===	*/
+
+Customers list -> we'll replace link to "Details" w/ Edit Form
+- > Index of customers - instead of "Details" we'll use "Edit" action
+and instead of 
+- > We create an action
+- > First we need to get a customer
+var customer = _context.SingleOrDefault(c => c.Id == id);
+If the customer exists it will be returned, otherwise we'll get null
+if(customer == null){
+	return HNF();
+}
+Otherwise we'll use that customer and render a form
+return View("New"); - here we override the view convention to call the 
+one we want 
+Second argument is a VM, so we create one
+var viewModel = new NewCustomerViewModel(){
+	Customer = customer,
+	MembershipTypes = _context.MembershipTypes.ToList()
+};
+Then we pass it to view as a second argument
+- > Since we're both creating AND editing customers with this VM
+we rename it (F2) - CustomerFormViewModel
+- > We also change the name of the view to reflect that:
+CustomerForm
+- > We shall not forget to pass "CustomerForm" as a view in New() AM
+- > Here we have tiny problem when editing because time componenet is displayed w/ full datetime
+	>> Fix: In view TextBoxFor has few different overloads, one of them takes FormatString
+	>> As second argument - "{0:d MMM yyyy}"
