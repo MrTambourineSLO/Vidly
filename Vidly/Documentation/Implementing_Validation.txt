@@ -147,4 +147,20 @@ required per se, only if membership type has a certain value
 	>> When we use Html Helper methods to render html razor
 	uses data anottations to validate values on client side!!!
 	BUT - it only WORKS w/ STANDARD DATA ANOTTATIONS in ASP!!!
+
+		/*	===		ANTI FORGERY TOKENS	===	*/
+
+- > If user saves some data and leaves computer we can see all his
+data in network tab because he's still in active session on the server
+- > We can modify it in a script to send malicious HTTPPOST request to the
+endpoint we see in traffic (CSRF - Crossite Request Forgery)+ all logs
+would appear as if the original victim has sent it.
+- > Two steps to prevent that.
+- > IN customer form, above save button: 
+	>>	@Html.AntiForgetyToken - this will create a token and put it as 
+	hidden form and as a cookie in his browser (we can see it as a cookie in
+	resources in Inspector)
+	>> We then compare user's hidden field and cookie token to see if they
+	match
+- > Save action has to have [ValidateAntiForgeryToken]
 		
