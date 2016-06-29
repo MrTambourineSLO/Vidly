@@ -25,10 +25,44 @@ namespace Vidly.Controllers
             _context.Dispose();
         }
 
-
+        [HttpGet]
         public ActionResult Edit(int id)
         {
-            return Content("id= " + id);
+            var genres = _context.Genres;
+            var movieToEdit = _context.Movies.Single(m => m.Id == id);
+            var viewModel = new NewMovieViewModel()
+            {
+                Movie = movieToEdit,
+                Genres = genres
+            };
+            if (movieToEdit == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View("Edit",viewModel);
+        }
+        [HttpPost]
+        public ActionResult Edit(Movie movie)
+        {
+            
+            if (movie == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                var movieToEdit = _context.Movies.Single(t => t.Id == movie.Id);
+                movieToEdit.GenreId = movie.GenreId;
+                movieToEdit.Name = movie.Name;
+                movieToEdit.NumberInStock = movie.NumberInStock;
+                movieToEdit.ReleaseDate = movie.ReleaseDate;
+                movieToEdit.Id = movie.Id;
+                
+            }
+            _context.SaveChanges();
+
+            return RedirectToAction("Index","Movies");
         }
 
         public ActionResult Index()
@@ -50,6 +84,34 @@ namespace Vidly.Controllers
 
         }
 
-      
+
+        public ActionResult New()
+        {
+            var genres = _context.Genres.ToList();
+            var viewModel = new NewMovieViewModel()
+            {
+                Genres = genres
+                
+            };
+            return View(viewModel);
+        }
+        [HttpPost]
+        public ActionResult Create(Movie movie)
+        {
+            if (movie == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                //Add date time in backend to prevent SQL Injection
+                movie.Added = DateTime.Now;
+                _context.Movies.Add(movie);    
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index","Movies");
+
+
+        }
     }
 }

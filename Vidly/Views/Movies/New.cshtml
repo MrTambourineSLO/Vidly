@@ -1,0 +1,15 @@
+﻿@using Vidly.ViewModels
+@model Vidly.ViewModels.NewMovieViewModel
+
+@{
+    ViewBag.Title = "Create new Movie";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add new Movie</h2>
+@using (Html.BeginForm("Create", "Movies"))
+{
+    @Html.Partial("Shared/_MoviesForm",Model)
+    <!-- Add hidden value which is datetime now-->
+   
+}

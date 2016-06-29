@@ -18,11 +18,14 @@ namespace Vidly.Models
         [Required]
         public DateTime Added { get; set; }
         [Required]
+        [Display(Name = "Number in Stock")]
         public byte NumberInStock { get; set; }
         /*Foreign key part*/
         //Navigation property to navigate between types
         public Genre Genre { get; set; }
         //EF's FK by convention
+        [Required]
+        [Display(Name = "Genres")]
         public byte GenreId { get; set; }
 
 

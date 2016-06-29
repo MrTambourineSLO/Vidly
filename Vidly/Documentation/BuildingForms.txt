@@ -72,13 +72,13 @@ We can see in our form that name of the label is exactly the same as name of the
 - > To add a dropdown list:
 	>> form-group:
 		>> LabelFor (MembershipTypeId)+ insted of TextBoxFor
-		>> DropDownListFor (m => m.Customer.MembershipType,)
+		>> DropDownListFor (m => m.Customer.MembershipTypeId,)
 			>>> Second argument has to be list of items supplied to dropdown
 				,new SelectList(Model.MembershipTypes)
 				SelectList is one of the types in MVC to init ddl
-			>>> Third: name of the property in MembershipTypes class that
+			>>> Third: name of the property in MembershipTypes class in SelectList that
 			holds the value for each item ("Id")
-			>>> Fourth: Property that hold text for each item ("Name")
+			>>> Fourth: Property that hold text for each item in SelectList("Name")
 		>> After SelectList we add third property of "" this will add blank
 		item at top of our dropdown list
 		(Or we could add "Select Membership Type ")
@@ -112,7 +112,7 @@ Form is ready - now bonding & implement saving a customer
 	>> We need to redirect user to list of customers
 	return RedirectToAction("Index","Customers")
 		
-		/*	===		EDITING FORMS	===	*/
+			/*	===		EDITING FORMS	===	*/
 
 Customers list -> we'll replace link to "Details" w/ Edit Form
 - > Index of customers - instead of "Details" we'll use "Edit" action
@@ -141,3 +141,47 @@ CustomerForm
 - > Here we have tiny problem when editing because time componenet is displayed w/ full datetime
 	>> Fix: In view TextBoxFor has few different overloads, one of them takes FormatString
 	>> As second argument - "{0:d MMM yyyy}"
+
+
+			/*	===		UPDATING DATA	===	*/
+
+- > Since we call create action in CustomersController, let's rename
+it to Save
+- > Now we check if customer has Id or not (so we see if we're editing
+or creating)
+	>> if(customer.Id == 0)
+	-> we'll add it to DB 
+	- > well we'll put it in memory first
+	
+	>> To update entity we need to get it from db first
+	   Then we want to update various properties
+	   Finally we call save changes
+	else{
+		//We're using single instead of SOD so that if it's not found
+		//it will throw an exception
+		var customerToUpdate = _context.Single(c => c.Id == customer.Id)
+		//Our Controllers have a method TryUpdateModel
+		//but it has issues (w/ secutrity holes because it allows
+		//update through malicous means of any data in DB)
+		//It's best to do it manually
+		customerToUpdate.Name = customer.Name; etc
+		//We can also use tool like automapper to do this by convention....
+
+	}
+	>> We now have a problem since Id is not returned by Form and we rely
+	on it to check if Customer is already in DB
+	>> We add it as a hidden field (just before the submit button)
+	@Html.HiddenFor(m=>m.Customer.Id)
+		
+			/*	===		EXERCISE 1	===	*/
+
+- > In list of movies - button New Movie just below h2 (ie a href w/ bs btn classes) (/Movies/New)
+- > WE have Name, RD, Genre (DDL), Number in stock
+- > All field are required
+- > Modify link to movie so that it goes to (Movies/Edit/id)(h2 is changed to Edit movie)
+	>> REMEMBER - when editing a record, you DON'T ADD IT TO A CONTEXT, you just CHANGE RECORD IN CONTEXT!!!
+- > IMPORTANT - if you get "Validation failed for one or more entries" when trying to save. See entity
+validation errors...
+	>> Only way to really see the problem is w/ try...catch block
+	>> We surrond SaveChanges() & change exception to DbEntityValidationException
+	>> We expand the property of exception few times and see whats wrong
