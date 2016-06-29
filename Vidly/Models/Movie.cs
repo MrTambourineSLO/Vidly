@@ -11,7 +11,7 @@ namespace Vidly.Models
     //Because of default route a view can return id of 
     //type string which is invalid and may cause a
     //ModelState validation error
-    [Bind(Exclude = "Id")]
+    //[Bind(Exclude = "Id")]
     public class Movie
     {
         

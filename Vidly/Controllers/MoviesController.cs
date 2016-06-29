@@ -30,9 +30,8 @@ namespace Vidly.Controllers
         {
             var genres = _context.Genres;
             var movieToEdit = _context.Movies.Single(m => m.Id == id);
-            var viewModel = new NewMovieViewModel()
+            var viewModel = new NewMovieViewModel(movieToEdit)
             {
-                Movie = movieToEdit,
                 Genres = genres
             };
             if (movieToEdit == null)
@@ -104,9 +103,8 @@ namespace Vidly.Controllers
             //movie.Added = DateTime.Today;
             if (!ModelState.IsValid)
             {
-                var viewModel = new NewMovieViewModel()
+                var viewModel = new NewMovieViewModel(movie)
                 {
-                    Movie = movie,
                     Genres = _context.Genres.ToList()
                 };
                 return View("MovieForm",viewModel);

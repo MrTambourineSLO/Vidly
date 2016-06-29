@@ -174,3 +174,33 @@ would appear as if the original victim has sent it.
 	>> NIS - must be between 1 and 20
 	>> Enable client side validation
 	>> Add anti forgery token
+
+
+			/*	===		CODE REVIEW	===	*/
+
+- > We have a problem w/ new movie form showing either garbage values for
+date etc when we cann Movie/New or on the other hand we have problem with
+assigning id to context.
+- > We need to refactor code a little bit:
+	>>	We could use this in form but it has some magic properties ("Movie.Id")
+		@Html.Hidden("Movie.Id",(Model.Movie != null)?Model.Movie.Id : 0)
+	>> So we delete it and implement "PURE VIEW-MODEL" for this form
+- > PURE VM:
+	>>	In our VM we're using a movie class, to remove initial values in form
+	we need to add properties of the movie we need need to capture from the FORM
+	and make them NULLABLE
+	>> We select all props from Movie.cs and paste them instead of a propertiy
+	of type movie in our VM
+	>> We proceed to make our props nullable here (not including strings
+	which are nullable by default)
+	>> We also delete Genre(we're not capturing it in the form)
+		& DateAdded -||-
+	>> We can replace the Title get w/ ternary operator (Id)
+- > Additional changes:
+	>> In form we replace .Movie. w/ .
+	>> In MoviesController/Edit we need to replace instatiation of VM
+	w/ individual property assignments - but it's better to do it
+	in VM Ctor which takes movie instance as argument
+	>> In Save we do the same
+	>> ALSO: in default CTOR for VM we set Id = 0!!! 
+		So that in MovieForm hidden field is populated

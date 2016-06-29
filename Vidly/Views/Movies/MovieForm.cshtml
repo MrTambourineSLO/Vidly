@@ -1,4 +1,5 @@
 ﻿
+@using Vidly.Models
 @model Vidly.ViewModels.NewMovieViewModel
 
 @{
@@ -10,26 +11,28 @@
 @using (Html.BeginForm("Save", "Movies"))
 {
     <div class="form-group">
-        @Html.LabelFor(l => l.Movie.Name)
-        @Html.TextBoxFor(t => t.Movie.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Movie.Name)
+        @Html.LabelFor(l => l.Name)
+        @Html.TextBoxFor(t => t.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Name)
     </div>
     <div class="form-group">
-        @Html.LabelFor(l => l.Movie.ReleaseDate)
-        @Html.TextBoxFor(t => t.Movie.ReleaseDate, "{0:d MMM yyyy}", new { @class = "form-control" })
-        @Html.ValidationMessageFor(r => r.Movie.ReleaseDate)
+        @Html.LabelFor(l => l.ReleaseDate)
+        @Html.TextBoxFor(t => t.ReleaseDate, "{0:d MMM yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(r => r.ReleaseDate)
     </div>
     <div class="form-group">
-        @Html.LabelFor(l => l.Movie.NumberInStock)
-        @Html.TextBoxFor(l => l.Movie.NumberInStock, new { @class = "form-control" })
-        @Html.ValidationMessageFor(n => n.Movie.NumberInStock)
+        @Html.LabelFor(l => l.NumberInStock)
+        @Html.TextBoxFor(l => l.NumberInStock, new { @class = "form-control" })
+        @Html.ValidationMessageFor(n => n.NumberInStock)
     </div>
     <div class="form-group">
-        @Html.LabelFor(l => l.Movie.GenreId)
-        @Html.DropDownListFor(t => t.Movie.GenreId, new SelectList(Model.Genres, "Id", "GenreName"), "Select genre", new { @class = "form-control" })
-        @Html.ValidationMessageFor(g => g.Movie.GenreId)
+        @Html.LabelFor(l => l.GenreId)
+        @Html.DropDownListFor(t => t.GenreId, new SelectList(Model.Genres, "Id", "GenreName"), "Select genre", new {@class = "form-control"})
+        @Html.ValidationMessageFor(g => g.GenreId)
     </div>
-    @Html.HiddenFor(t => t.Movie.Id)
+    <!--Make sure that we have a movie Id or we'll get an error
+        Beware of Magic String - alternative is in Movie.cs -->
+    @Html.HiddenFor(t => t.Id)
     @Html.AntiForgeryToken()
     <button class="btn btn-primary">
         Save
