@@ -89,3 +89,18 @@ Here we OVERRIDE IsValid() method
 		return(age >= 18 : ValidationResult.Success : new ValidationResult("Customer
 		should be at leat 18 yo to go on a membership"))
 	>> We add validation message placeholder to view under birthdate field
+
+
+		/*	===		REFACTORING MAGIC NUMBERS	===	*/
+
+- > MN hurt maintenabilty! (eg customer.MembershipTypeId==1)
+	>> Above membership types are essentially reference data
+	>> We have to define those types in our domain model to make code
+	more mainteinable
+- > Models - Membership Type:
+//Let's make readonly fields according to DB 
+public static readonly byte Unknown = 0;
+PayAsYouGo = 1;
+- > in Custom Validation we then check (customer.MembershipTypeId == Unknown)...
+- > We only define fields we need
+- > We can also use enum, but then we have to cast them on use
