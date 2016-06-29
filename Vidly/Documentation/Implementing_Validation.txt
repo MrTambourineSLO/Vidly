@@ -1,0 +1,26 @@
+﻿			/*	===		INTRODUCTION	===	*/
+
+- > In customer ctrl Save action we have Customer as parameter
+- > MVC when it populates it using request data it checks to see if 
+this object is valid based on DATA ANNOTATIONS
+	>> We can use ModelState prop to get info on validation data
+	ModelState.IsValid() is bool, so we can change app flow:
+	if(!ModelState.IsValid()){
+		var viewModel = new CustomerFormViewModel(){
+			Customer = customer,
+			MembershipTypes = _context.MembershipTypes.ToList()
+		}
+		return View("CustomerForm",ViewModel)
+	}
+		>>> Ergo we return same view w/ same (invalid) data (which has to be VM! as 
+		was defined) for user to correct
+- > To add Validation there are 3 steps to follow
+	>> Add data annotations on entities
+	>> Validate ModelState to change flow of the program
+	(if not valid return the same view)
+	>> Add VALIDATION MESSAGES to our FORM
+		>>> Add placeholder for validation messages next to each
+		field that requires validation
+		Eg Customer.Name is req and is limited w/ 255 chars 
+		Under Label & TB
+		we add @Html.ValidationMessageFor(m => m.Customer.Name)

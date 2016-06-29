@@ -238,6 +238,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Documentation\BuildingForms.txt" />
     <Content Include="Documentation\Fundamentals.txt" />
+    <Content Include="Documentation\Implementing_Validation.txt" />
     <Content Include="Documentation\Working_With_Data.txt" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
