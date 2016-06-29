@@ -120,4 +120,31 @@ PayAsYouGo = 1;
 required per se, only if membership type has a certain value
 
 
-			/*	===		VALIDATION SUMMARY	===	*/
+			/*	===		CLIENT SIDE VALIDATION	===	*/
+
+- > All validation so far happened on the server
+- > Client-side is nice
+	>> Immediate feedback
+	>> We don't waste server sources
+- > By default c-s-v is not enabled in MVC app
+- > App_start - BundleConfig
+	>> Here we have jqueryval which isn't referenced anywhere
+- > Views - Shared - _Layout - Bottom:
+	>> @RenderSection("scripts", required: false)
+		Tells us we can add bundles in script tags on page
+	>> We go to CustomerForm and at the bottom we add
+		
+		@section scripts
+		{
+			//Here we render Jq Validation Bundle
+			@Scripts.Render("~/bundles/jqueryval")
+		}
+	>> In page in inspector (Customers/New) we open Network tab
+	and hit Save - we get no network traffic, but errors still
+	show, because all this validation takes place in client!!!
+
+- > MVC uses DATA ANNOTATIONS for CSV as well!
+	>> When we use Html Helper methods to render html razor
+	uses data anottations to validate values on client side!!!
+	BUT - it only WORKS w/ STANDARD DATA ANOTTATIONS in ASP!!!
+		
