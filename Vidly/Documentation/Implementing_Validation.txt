@@ -44,3 +44,15 @@ REQUIRED because it's type is byte!
 - ***TIP*** > to force view NOT TO USE CAHCED styles
 refresh it w/ CTRL+F5
 
+			/*	===		OTHER DATA ANNOTATIONS	===	*/
+
+- > Besides Required & StringLength()
+	>> Range(min,max)
+	>> [Compare("OtherProperty")] //eg for passwords
+	>> [Phone]
+	>> [EmailAddress]
+	>> [Url]
+	>> [RegularExpression("...")]
+- > All have default validation message
+	>> To override it we add Error message property in DA eg:
+	[Required(ErrorMessage =".......")]
