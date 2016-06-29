@@ -56,3 +56,36 @@ refresh it w/ CTRL+F5
 - > All have default validation message
 	>> To override it we add Error message property in DA eg:
 	[Required(ErrorMessage =".......")]
+
+		/*	===		CUSTOM VALIDATION	===	*/
+
+- > Say that for Memberships Customer should be at leat
+18yo (other than for pay as you go)
+- > Models - new class - Min18YearsIfAMember
+- > It derives from ValidationAttribute
+Here we OVERRIDE IsValid() method
+	>> This method has 2 overloads, it's best to go w/
+	one that takes Object & Validation context because it gives us access to
+	other properties of our model.
+	>> We 1st apply it to Birthdate which is a property we'll validate
+	[Min18YearsIfAMember]
+	>> In Attribute:
+		>>> 1st we check selected membership type:
+		var customer = (Customer)ValidationContext.ObjectInstance;
+		//ValidationContext.ObjectInstance gives access to customer
+		//But we need to cast it as Customer !
+		>> We check Membership:
+		if(customer.MembershipTypeId == 1 || customer.MembershipTypeId == 0 ){
+		//0 if user doesn't choose memberhsip type
+			return ValidationResult.Success;
+		}
+		if(customer.Birthday == null){
+			//Instantiating new ValidationResult indicates validation failed
+			return new ValidationResult("Birthday is required");
+		}
+		//Birthdate has value because it's nullable
+		var age = DateTime.Today.Year - customer.Birthdate.Value.Year;
+
+		return(age >= 18 : ValidationResult.Success : new ValidationResult("Customer
+		should be at leat 18 yo to go on a membership"))
+	>> We add validation message placeholder to view under birthdate field

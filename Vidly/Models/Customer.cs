@@ -25,6 +25,7 @@ namespace Vidly.Models
         
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyy}")]
         [Display(Name = "Date of Birht")]
+        [Min18YearsIfMember]
         public DateTime? Birthday { get; set; }
     }
 }
