@@ -40,30 +40,30 @@ namespace Vidly.Controllers
                 return HttpNotFound();
             }
 
-            return View("Edit",viewModel);
+            return View("MovieForm",viewModel);
         }
-        [HttpPost]
-        public ActionResult Edit(Movie movie)
-        {
+        //[HttpPost]
+        //public ActionResult Edit(Movie movie)
+        //{
             
-            if (movie == null)
-            {
-                return HttpNotFound();
-            }
-            else
-            {
-                var movieToEdit = _context.Movies.Single(t => t.Id == movie.Id);
-                movieToEdit.GenreId = movie.GenreId;
-                movieToEdit.Name = movie.Name;
-                movieToEdit.NumberInStock = movie.NumberInStock;
-                movieToEdit.ReleaseDate = movie.ReleaseDate;
-                movieToEdit.Id = movie.Id;
+        //    if (movie == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    else
+        //    {
+        //        var movieToEdit = _context.Movies.Single(t => t.Id == movie.Id);
+        //        movieToEdit.GenreId = movie.GenreId;
+        //        movieToEdit.Name = movie.Name;
+        //        movieToEdit.NumberInStock = movie.NumberInStock;
+        //        movieToEdit.ReleaseDate = movie.ReleaseDate;
+        //        movieToEdit.Id = movie.Id;
                 
-            }
-            _context.SaveChanges();
+        //    }
+        //    _context.SaveChanges();
 
-            return RedirectToAction("Index","Movies");
-        }
+        //    return RedirectToAction("Index","Movies");
+        //}
 
         public ActionResult Index()
         {
@@ -93,20 +93,26 @@ namespace Vidly.Controllers
                 Genres = genres
                 
             };
-            return View(viewModel);
+            return View("MovieForm",viewModel);
         }
         [HttpPost]
-        public ActionResult Create(Movie movie)
+        public ActionResult Save(Movie movie)
         {
-            if (movie == null)
-            {
-                return HttpNotFound();
-            }
-            else
+            if (movie.Id == 0)
             {
                 //Add date time in backend to prevent SQL Injection
                 movie.Added = DateTime.Now;
-                _context.Movies.Add(movie);    
+                _context.Movies.Add(movie); 
+            }
+            else
+            {
+                var movieToEdit = _context.Movies.Single(t => t.Id == movie.Id);
+                movieToEdit.GenreId = movie.GenreId;
+                movieToEdit.Name = movie.Name;
+                movieToEdit.NumberInStock = movie.NumberInStock;
+                movieToEdit.ReleaseDate = movie.ReleaseDate;
+                movieToEdit.Id = movie.Id;
+                   
             }
             _context.SaveChanges();
             return RedirectToAction("Index","Movies");
