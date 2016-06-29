@@ -24,3 +24,23 @@ this object is valid based on DATA ANNOTATIONS
 		Eg Customer.Name is req and is limited w/ 255 chars 
 		Under Label & TB
 		we add @Html.ValidationMessageFor(m => m.Customer.Name)
+
+
+		/*	===		STYLING VALIDATION ERRORS	===	*/
+
+- >We check error message in browser inspector and see we have
+a span w/class field-validation-error
++An input has a class of input-validation-error
+- > Site.css
+.field-validation-error{
+	color: red;
+}
+.input-validation-error{
+	border: 2px solid red;	
+}
++We implement validation for MembershipTypeId
+- Even though MembershipTypeId is not required it's IMPLICITLY
+REQUIRED because it's type is byte!
+- ***TIP*** > to force view NOT TO USE CAHCED styles
+refresh it w/ CTRL+F5
+

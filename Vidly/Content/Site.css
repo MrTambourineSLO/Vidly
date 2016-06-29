@@ -15,6 +15,12 @@
 .dl-horizontal dt {
     white-space: normal;
 }
+.field-validation-error {
+    color: red;
+}
+.input-validation-error {
+    border: 2px solid red;
+}
 
 /* Set width on the form input elements since they're 100% wide by default */
 input,
