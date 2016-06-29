@@ -8,10 +8,16 @@
 <h2>New customer</h2>
 @using (Html.BeginForm("Save", "Customers"))
 {
+    @Html.ValidationSummary(true,"Please fix the errors below.")
     <div class="form-group">
         @Html.LabelFor(m => m.Customer.Name)
         @Html.TextBoxFor(a => a.Customer.Name, new {@class = "form-control"})
         @Html.ValidationMessageFor(m => m.Customer.Name)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Customer.MembershipTypeId)
+        @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "MembershipName"), "Select membership type", new { @class = "form-control" })
+        @Html.ValidationMessageFor(v => v.Customer.MembershipTypeId)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Customer.Birthday)
@@ -20,11 +26,7 @@
     </div>
 
     
-    <div class="form-group">
-        @Html.LabelFor(m => m.Customer.MembershipTypeId)
-        @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "MembershipName"), "Select membership type", new {@class = "form-control"})
-        @Html.ValidationMessageFor(v => v.Customer.MembershipTypeId)
-    </div>
+    
     <div class="checkbox">
         <label>
             @Html.CheckBoxFor(m => m.Customer.IsSubscribedToNewsLetter) Is subscribed to NewsLetter?

@@ -104,3 +104,20 @@ PayAsYouGo = 1;
 - > in Custom Validation we then check (customer.MembershipTypeId == Unknown)...
 - > We only define fields we need
 - > We can also use enum, but then we have to cast them on use
+
+			/*	===		VALIDATION SUMMARY	===	*/
+
+- > We can display validation summary at top of form by adding
+	@Html.ValidationSummary()
+	>> Problem: it says that Id is required (because byte)
+	>> We have a hidden field for id but it's null atm
+	>> In AM New we have to initialize Customer.id in ViewModel
+		Customer = new Customer(); // So it initializes to 0 and has a value!!!
+	>> If we don't want to list errors but just display a message we pass
+	true to ValidationSummary (ie exclude property errors)
+	And then we pass "Error message" (please fix errors)
+- > It also makes sense that we put birthday after Membership Type since it's not 
+required per se, only if membership type has a certain value
+
+
+			/*	===		VALIDATION SUMMARY	===	*/
