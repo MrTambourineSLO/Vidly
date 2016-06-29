@@ -163,4 +163,14 @@ would appear as if the original victim has sent it.
 	>> We then compare user's hidden field and cookie token to see if they
 	match
 - > Save action has to have [ValidateAntiForgeryToken]
+
+
 		
+			/*	===		EXERCISE	===	*/
+
+- > Add validation to our movie form
+	>> Don't worry about wierd initial vals for RD and NIS
+	>> All fields are req
+	>> NIS - must be between 1 and 20
+	>> Enable client side validation
+	>> Add anti forgery token

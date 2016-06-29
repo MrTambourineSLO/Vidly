@@ -97,8 +97,20 @@ namespace Vidly.Controllers
             return View("MovieForm",viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        
         public ActionResult Save(Movie movie)
         {
+            //movie.Added = DateTime.Today;
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new NewMovieViewModel()
+                {
+                    Movie = movie,
+                    Genres = _context.Genres.ToList()
+                };
+                return View("MovieForm",viewModel);
+            }
             if (movie.Id == 0)
             {
                 //Add date time in backend to prevent SQL Injection
