@@ -121,3 +121,20 @@ CustomersController(note the plural)
 		_context.customers.Remove(customerInDb);
 		_context.SaveChanges();
 	}
+			/*	===		TESTING an API	===	*/
+
+- > Can check in browser eg /api/customers
+	>> It returns an XML
+- > Better way to test is to install Postman rest client shortcut plugin
+(or an app Postman)
+	>> In postman we first send a get req on /api/customers,
+	set output to JSON & then copy one 
+	of the customers.
+	>> We change req to Post and in Body check raw data, copy/paste customer
+	delete id (it's auto-generated) 
+	>> In headers we apply key/value type Content-type application/json
+	and click send
+	>> As per API customer is then returned and we can see his newly
+	appointed ID!!!
+	>> Good app for checking ENDPOINTS - GOOD PRACTICE before writing any
+	javascript
