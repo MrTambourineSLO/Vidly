@@ -138,3 +138,36 @@ CustomersController(note the plural)
 	appointed ID!!!
 	>> Good app for checking ENDPOINTS - GOOD PRACTICE before writing any
 	javascript
+
+			/*	===		DATA TRANSFER OBJECTS	===	*/
+
+- > Problem: Our API recieves/returns customer objects.
+	>> What's the problem here?
+	>> Customer is part of domain model of our application, which is considered
+	IMPLEMENTATION DETAIL - which can change frequently - and break clients
+	dependent on API
+- > We need to make contract of our API more stable:
+- > To change this we need a different model which we call DTO
+(DATA TRANSFER OBJECT)
+	>> This is plain data structure used to transfer data from the client
+	to the server or vice versa. We have to be careful changing API -
+	ie a topic of API verisoning
+- > In short: 
+	>> We should never return DOMAIN OBJECTS
+	>> With above it also exposes our data to security risks
+	W/ DTO we can exclude eg properties that should not be updated.
+- > New folder DTOs -> class CustomerDTO
+	>> Copy properties from customer class
+		>>> We exclude MembershipType, if we wanted to return MembershipType
+		we'd have to implement new MembershipTypeDTO type
+		>>> In short we only return primitive type or custom details
+		>>> For returning hierarhical data structures we create DTOs so we
+		completely decouple them from domain objects.
+	>> We don't need display attributes which are for forms only
+	>> Back in controller, wherever we return Domain Object we need to 
+	map them to DTO first, also in methods where we modify customer 
+	we need to map this customer DTO properties back to our customer 
+	object.
+- > To avoid tediousness we'll use:
+
+			/*	===		AUTO MAPPER	===	*/
