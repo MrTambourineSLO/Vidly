@@ -171,6 +171,7 @@ CustomersController(note the plural)
 - > To avoid tediousness we'll use:
 
 			/*	===		AUTO MAPPER	===	*/
+
 PM> install-package automapper -version:4.1
 - > Now we need to create mapping profile which defines how 
 	objects of different types can be mapped to each other.
@@ -207,3 +208,38 @@ After we save changes we need to add Id to Dto object
 		>>> We do this because we have an EXISTING object to modify and
 		we're not assigning it o a new (var) object as before
 		+ We no longer need those assignments below
+
+			/*	===		CAMEL NOTATION	===	*/
+
+- > Minor problem is endpoint returns properties in PASCAL notation, bu JS
+uses camelNotation
+- > Let's configure api to return JSON obj w/ CN
+	We open WebApiConfig
+		>> At top of Register method:
+		var setting = config.Formatters.JsonFormatter.SerializerSettings;
+		settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+		setting.Formatting = Formatting.Indented;
+
+
+			/*	===		IHttpActionResult	===	*/
+				(ie ActionResult in WebApis)
+
+- > Right now when we return DTO status code is 200 OK, but in
+RESTFul convention status code should be 201 CREATED
+- > Instead of returning DTO we must return IHttpActionResult
+	>> It's similar to ActionResult
+	>> It has many helper mehods, we can simply return BadRequest()
+	insted of throwing new exception
+	>> Insted of returning customer DTO we 
+	return Created() method
+		>>> Insted of DTO we return URI
+		[UNIFIED RESOURCE INDENTIFIER]
+		so we return 
+		new Uri((uri of our current request +"/"+ id of our object),
+				DTO); -ergo api/customers/4
+		>>> Uri of current request is Request.RequestUri
+		>>> We also temporarily comment our our custom attributes
+		in CustomerDTO because we're casting our ObjectInstance on Customer and 
+		not a DTO.
+- > When we return a single instance of IHAR we return Ok(with previous parameters)
+				

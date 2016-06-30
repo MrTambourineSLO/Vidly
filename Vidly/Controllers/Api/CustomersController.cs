@@ -27,26 +27,26 @@ namespace Vidly.Controllers.Api
         }
         //GET /api/customers/id
 
-        public CustomerDTO GetCustomer(int id)
+        public IHttpActionResult GetCustomer(int id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
             //Check if id was out of range
             if (customer == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
             }
-            return Mapper.Map<Customer,CustomerDTO>(customer);
+            return Ok(Mapper.Map<Customer, CustomerDTO>(customer));
         }
 
         //POST /api/customers
         // We return newly created resource by convention to client
         [HttpPost]
-        public CustomerDTO CreateCustomer(CustomerDTO customerDto)
+        public IHttpActionResult CreateCustomer(CustomerDTO customerDto)
         {
             //is model state valid?
             if (!ModelState.IsValid)
             {
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             var customer = Mapper.Map<CustomerDTO, Customer>(customerDto);
             _context.Customers.Add(customer);
@@ -54,7 +54,7 @@ namespace Vidly.Controllers.Api
             _context.SaveChanges();
             //Add id that was generate by the database
             customerDto.Id = customer.Id;
-            return customerDto;
+            return Created(new Uri(Request.RequestUri +"/"+ customer.Id), customerDto );
         }
         //POST /api/customers/1 
         //Essentially edit customer
