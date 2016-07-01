@@ -1,0 +1,211 @@
+﻿			/*	===	CLIENT SIDE DEVELOPMENT	===	*/
+			/*	===	jQuery REFRESHER	===	*/
+
+			/*	=== SELECTING ELEMENTS in jQuery ===	*/
+
+- > Tag to get jq from CDN
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+- > 1st Ensure DOM is ready before running jq code, so all elements are in existence,
+	+Ensure separation from CSS / Html:
+	$(document).ready(function() {
+		// all jQuery code goes here
+	});
+
+- > Selecting elements in Jq
+	$("div"); // selects all HTML div elements
+	$("#myElement"); // selects one HTML element with ID "myElement"
+	$(".myClass"); // selects HTML elements with class "myClass"
+	$("p#myElement"); // selects paragraph elements with ID "myElement"
+	$("ul li a.navigation"); // selects anchors with class "navigation" that are nested in list items
+
+- > Selecting w/ other selectors (includin CSS3)
+	$("p > a"); // selects anchors that are direct children of paragraphs
+	$("input[type=text]"); // selects inputs that have specified type
+	$("a:first"); // selects the first anchor on the page
+	$("p:odd"); // selects all odd numbered paragraphs
+	$("li:first-child"); // every list item that's first child in a list
+
+- > Selecting w/ our own custom selectors:
+	$(":animated"); // selects elements currently being animated
+	$(":button"); // selects any button elements (inputs or buttons)
+	$(":radio"); // selects radio buttons
+	$(":checkbox"); // selects checkboxes
+	$(":checked"); // selects selected checkboxes or radio buttons
+	$(":header"); // selects header elements (h1, h2, h3, etc.)
+
+			/*	=== MANIPULATING & ACCESSING CSS CLASS NAME ===	*/
+
+- > We can add, remove & toggle CSS classes which comes in handy:
+	$("div").addClass("content"); // adds class "content" to all <div> elements
+	$("div").removeClass("content"); // removes class "content" from all <div> elements
+	$("div").toggleClass("content"); // toggles the class "content" on all <div> elements 
+									//(adds it if it doesn't exist, and removes it if it does)
+
+- > Checking if element has a particular class and run code if it does
+	if($("#myElement").hasClass("content")){
+		//Run some code
+	}
+
+			/*	=== MANIPULATING CSS STYLES ===	*/
+
+- > We can add styles to elements in cross-browser fashion
+	$("p").css("width", "400px"); // adds a width to all paragraphs
+	$("#myElement").css("color", "blue") // makes text color blue on element #myElement
+	$("ul").css("border", "solid 1px #ccc") // adds a border to all lists
+
+
+			/*	=== ADDING,REMOVING & APPENDING ELEMENTS & CONTENT ===	*/
+- > Get HTML of any elements
+	var myElementHtml = $("#myElement").html(); //Includes any text
+
+- > If we only want text w/o element
+	var myElement = $("#myElement").text();
+
+- > In parentheses we can *REPLACE* content :
+	var myElementHtml = $("#myElement").html("<p>Some text</p>");
+	var myElement = $("#myElement").text("Just replace other text");
+
+- > Same as above but APPEND:
+	$("#myElement").append("<p>Some text</p>");
+	$("p").append("<p>Append this text to all paragraphs</p>")
+
+- > We also have similar commands:
+	appendTo(), 
+	prepend(), 
+	prependTo(), 
+	before(), 
+	insertBefore(), 
+	after(), 
+	insertAfter()
+
+			/*	=== DEALING W/ EVENTS ===	*/
+- > Specific event handlers are specified using the following code:
+	$('a').click(function(){
+		//do something here *when* ANY ANCHOR is clicked
+	});
+- > Some other common events besides click(function())
+	blur, 
+	focus, 
+	hover, 
+	keydown, 
+	load, 
+	mousemove, 
+	resize, 
+	scroll, 
+	submit, 
+	select
+
+			/*	=== SHOWING & HIDING ELEMENTS ===	*/
+
+- > Do sth once when element is hidden
+	$("#myElement").hide("slow", function(){
+	});
+
+- > -||- shown
+	$("#myElement").show("fast", function(){
+	}); 
+
+- > -||- shown/hidden
+
+	$("#myElement").toggle(1000, function(){
+	}); 
+
+- > "Slow","Fast", number-of-miliseconds indicates speed of showing/hiding 
+- > We can also use following events in this manner
+	fadeOut
+	fadeIn
+- > To eg Fade element only partially:
+	$("#myElement").fadeIn(1000,0.4, function(){
+		//Do something when fade is finished
+	}); 
+	>> Second argument represents oppacity
+
+		/*	=== jQ ANIMATIONS AND EFFECTS ===	*/
+
+- > Commands:
+	slideDown
+	slideUp
+	slideToggle
+	>> Arguments are same as for showing/hiding elements
+
+- > Animate element w/ specifying CSS style it should change to
+	$("#myElment").animate({
+		opacity: .3,
+		width: "500px",
+		height: "700px"},2000,function(){
+			//Optionally do something after animation completes
+		}) 
+			
+			
+			/*	===	CALLING AN API USING jQ	===	*/
+
+- > 1st we give table id customers.
+
+- > Index in Customers. New th for delete.
+	td w/ button; classes: btn-link, js-delete ;text: Delete
+	//We prefixed class w/ js to know that it's exclusively for js
+
+- > Now JQ to handle click event
+	>> Bottom of file
+	@section scripts
+	{
+		<script>
+			$(document).ready(function(){
+				//All jq code goes here	  
+				
+			});
+		</script>
+	}
+
+- > Now select a button
+	$("#customers .js-delete").on("click",function(){
+		
+	});
+
+- > First let's test simple confirmation box:
+	confirm("Are you sure you want to delete this customer.")
+
+- >We wrap it in if block - ie if confirm function returns true.
+- >We want to call an API usin jqAjax
+- > first we add this attribute to our button: data-customer-id ="@customer.Id"
+	$.ajax({
+		url: "/api/customers/"+$(this)attr("data-customer-id"),
+		method: "DELETE",
+		//Callback when call is successfull
+		success: function(){
+			console.log("Success");
+		}
+	})
+- > Now we need to remove table row that includes this customer.
+	
+	>> To use button it's best to define it after click event at top of callback
+	function:
+		var button = $(this);//Now we get ref to button that's just been pressed
+
+	>> We can start from reference to our button and navigate up DOM to tr
+	>> in success function
+		button.parents("tr").remove();
+		+we replace previous $(this) reference to button with button
+
+		/*	===	MORE BEAUTYFUL BOXES	===	*/
+		/*	===	BootBox jQ plugin		===	*/
+
+- > Bootbox is abstraction over BS that provides simple functions
+to provide various window boxes.
+- > PM> install-package bootbox -version:4.3.0
+- > Add ref to bootbox.js in our bundle:
+	>>  App_Start - BundleConfig:
+	in bootstrap bundle we add additional js
+	>> w/ bundles we automatically get minification when we 
+	compile in release
+- > In index.cshtml we replace our if(confirm) w/
+	>> bootbox.confirm("Are you sure.....")
+	>> Unlike native js - this method doesn't return a boolean
+	but takes a callback function so we pass it as 2nd argument
+	with result parameter.
+	if(result){
+		//copy past our ajax call
+	}
+
+		/*	===	OPTIMIZING JQ CODE	===	*/
