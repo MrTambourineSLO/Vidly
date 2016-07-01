@@ -219,3 +219,110 @@ to provide various window boxes.
 	this way we'll have only 1 click handler for all delete buttons
 	>> Why? Because our selector is bound to only one element "#customers"
 	>> And in this one handler we have a filter.
+
+		/*	===	DATA TABLES PLUGIN	===	*/
+
+- > Plugin adds pagination, sorting and filtering.
+- > PM> install-package jquery.datatables -version:1.10.11
+- > We'll consolidate 2 bundles we use on every page(jq,bs) into single
+one "lib" that represents 3rd party libraries
+	>> in _Layout.cshtml:
+	we delete two previous @Scripts.Render into single one 
+	@Scripts.Render("~/bundles/lib")
+	>> in bundleconfig
+	Rename jq bundle to "lib"+ we bring in all script from bs bundle &
+	delete bs bundle
+	>> in Lib bundle we add 2 DataTables scripts we'll use - there are plenty of them
+	~/scripts/datatables/jquery.datatables.js (core script)
+						/datatables.bootstrap.js (integrates dt w/ bs)
+	+We need to add DT CSS to our css bundle
+	~/content/datatables/css/datatables.bootstrap.css (makes DT look like bootstrap tables)
+- > In Index.cshtml
+	> $(document).ready(function(){...})
+	>> //Get ref to customers table and call DataTable func on it
+	$("#customers").DataTable();
+
+- > There is one downside to it for big pages with this implementation:
+	We render view on server & return HTML to client
+	DTplugin has to extract all this info from HTML and construct
+	it's own list of customers
+- > It's faster to give raw data from the server and let DT generate
+HTML on the client (ie we return JSON instead of Markup)
+
+		/*	===	DATA TABLES W/ AJAX SOURCE	===	*/
+
+- > We delete foreach but leave table structure
+- > In index method of CustomerController we return just an empty view
+	we do not need to fetch customers from DB anymore
+
+- > Since we don't have a model we also get rid of our if...else block
+- > When we call #().DataTable({
+	we need to provide configuration object here
+});
+
+-> we need properties:
+	1. ajax: //which in turn is also a prop w/ 2 objects
+	{
+		url: "/api/customers/"
+		dataSrc: ""
+	},
+	>> Why is datSrc empty?
+	>> Well in case we had json obj like this:
+	{
+		count: 10,
+		customers: [
+			{...},
+			{...},
+		...
+		]
+	}
+		>>> We'd need to provide dataSrc as "Customers"
+	
+	>> In our case response is array of objects ie source of data
+	2.columns: [
+		//For each column we supply an object and it it 
+		//various properties in particular column
+
+		//Argument list contains different arguments to support
+		//rendering
+		
+		//If we want to have link not plain text we
+		//must supply custom rendering function	
+
+
+		{
+			data: "name",//Where is data for this column?	
+			render: function(data, type, customer){												
+				return "<a href="'/customers/edit'" + customer.id"'>"+customer.name +"</a>";
+			}			 
+		},
+		{
+			data: "name" // here we'll actually need MembershipType.Name
+		},
+		{
+			data: "id",
+			render: function(data){
+				return"<button class='btn btn-link js-delete' data-customer-id=" +data + ">Delete</button>";
+			}
+		}
+		{
+		
+		}
+	]
+
+			/*	===	RETURNING HIEARARHICAL DATA	===	*/
+
+- > We're missing membership data right now, we have only membership ID
+- > CustomersController in api:
+- > In GetCustomers() we need to EAGER LOAD the customers w/ memberhsiptype
+	using System.Data.Entity and we use Include w/ lambda
+- > In CustomerDto though we have no membership type thus: 
+- > We need to create MembershipTypeDto (we don't want to couple
+our Dtos with Domain Object)
+- > Dtos -> MembershipTypeDto
+	>> We add only Id and Name
+- > In CustomerDto:
+	public MembershipTypeDto MembershipType{get;set;}
+- > Last we insert it into automapper
+- > In index - we change 2nd property we left before as name to
+membershipType.name
