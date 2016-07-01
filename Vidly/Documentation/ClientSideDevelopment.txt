@@ -325,4 +325,23 @@ our Dtos with Domain Object)
 	public MembershipTypeDto MembershipType{get;set;}
 - > Last we insert it into automapper
 - > In index - we change 2nd property we left before as name to
-membershipType.name
+membershipType.membershipName
+
+
+			/*	===	DATA TABLE REMOVING RECORDS	===	*/
+
+- > Right now we have a bug that if we delete a row it will stay there (not
+in Db but on site).
+- > Reason is that we're just removing tr from DOM:
+	success: function () {
+			button.parents("tr").remove();
+			}
+- > But DataTable keeps a list of customers internally
+- > We should remove customer from internal list of DataTable and
+after that we tell DataTable to redraw itself
+- > 1st we need a ref to DT (when we call DT function we get result
+and store it in variable table)
+- > Back in success function:
+	table.row(reference to the tr - ie button.parents("tr") then we 
+	call remove method on it; finally we call draw() method on it to 
+	redraw the table
