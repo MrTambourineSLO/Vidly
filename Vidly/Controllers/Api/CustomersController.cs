@@ -20,10 +20,10 @@ namespace Vidly.Controllers.Api
             
         }
         //GET /api/customers
-        public IEnumerable<CustomerDTO> GetCustomers()
+        public IEnumerable<CustomerDto> GetCustomers()
         {
             //Don't forget to cast to list
-            return _context.Customers.ToList().Select(Mapper.Map<Customer,CustomerDTO>);
+            return _context.Customers.ToList().Select(Mapper.Map<Customer,CustomerDto>);
         }
         //GET /api/customers/id
 
@@ -35,20 +35,20 @@ namespace Vidly.Controllers.Api
             {
                 return NotFound();
             }
-            return Ok(Mapper.Map<Customer, CustomerDTO>(customer));
+            return Ok(Mapper.Map<Customer, CustomerDto>(customer));
         }
 
         //POST /api/customers
         // We return newly created resource by convention to client
         [HttpPost]
-        public IHttpActionResult CreateCustomer(CustomerDTO customerDto)
+        public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
             //is model state valid?
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var customer = Mapper.Map<CustomerDTO, Customer>(customerDto);
+            var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
             _context.Customers.Add(customer);
             //Now customer has an auto generated id
             _context.SaveChanges();
@@ -60,7 +60,7 @@ namespace Vidly.Controllers.Api
         //Essentially edit customer
         //We can either return a customer or void it's all the same
         [HttpPut]
-        public void UpdateCustomer(int id, CustomerDTO customerDto)
+        public void UpdateCustomer(int id, CustomerDto customerDto)
         {
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
             //Was there a bad id?

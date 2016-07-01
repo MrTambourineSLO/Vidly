@@ -242,4 +242,11 @@ RESTFul convention status code should be 201 CREATED
 		in CustomerDTO because we're casting our ObjectInstance on Customer and 
 		not a DTO.
 - > When we return a single instance of IHAR we return Ok(with previous parameters)
+
+
+			/*	===		EXERCISE	===	*/
+
+API for CRUD operations around MOVIES.
+-> Endpoint:
+	GetAll(),Get(id),Add,Update,Delete
 				
