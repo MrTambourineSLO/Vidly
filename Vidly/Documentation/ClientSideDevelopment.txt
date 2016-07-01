@@ -209,3 +209,13 @@ to provide various window boxes.
 	}
 
 		/*	===	OPTIMIZING JQ CODE	===	*/
+
+ $('#customers .js-delete').on("click", function ()
+ - > We're inefficiently handling click events:
+	>> For each customer we'll have delete button and fore each button
+	>> we have separate HANDLER function - more customers more memory we'll consume
+	- > It's better if we change selector to only customers table and then
+	>> FILTER as second argument of "on" method
+	this way we'll have only 1 click handler for all delete buttons
+	>> Why? Because our selector is bound to only one element "#customers"
+	>> And in this one handler we have a filter.
