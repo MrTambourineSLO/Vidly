@@ -20,10 +20,11 @@ namespace Vidly.Controllers.Api
             
         }
         //GET /api/customers
-        public IEnumerable<CustomerDto> GetCustomers()
+        public IHttpActionResult GetCustomers()
         {
             //Don't forget to cast to list
-            return _context.Customers.ToList().Select(Mapper.Map<Customer,CustomerDto>);
+            var customerDtos = _context.Customers.ToList().Select(Mapper.Map<Customer,CustomerDto>);
+            return Ok(customerDtos);
         }
         //GET /api/customers/id
 
@@ -60,30 +61,38 @@ namespace Vidly.Controllers.Api
         //Essentially edit customer
         //We can either return a customer or void it's all the same
         [HttpPut]
-        public void UpdateCustomer(int id, CustomerDto customerDto)
+        public IHttpActionResult UpdateCustomer(int id, CustomerDto customerDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
             //Was there a bad id?
             if (customerInDb == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
             }
             //Map two customers
             Mapper.Map(customerDto,customerInDb);
-
             _context.SaveChanges();
+
+
+            return Ok();
         }
         //DELETE /api/customers/id
         [HttpDelete]
-        public void DeleteCustomer(int id)
+        public IHttpActionResult DeleteCustomer(int id)
         {
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
             if (customerInDb == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
             }
             _context.Customers.Remove(customerInDb);
             _context.SaveChanges();
+
+            return Ok();
         }
         
         

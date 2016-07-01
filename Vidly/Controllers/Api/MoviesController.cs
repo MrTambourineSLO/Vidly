@@ -22,9 +22,10 @@ namespace Vidly.Controllers.Api
         }
         //GET
         // /api/movies/
-        public IEnumerable<MovieDto> GetMovies()
+        public IHttpActionResult GetMovies()
         {
-            return _context.Movies.ToList().Select(Mapper.Map<Movie,MovieDto>);
+            var movieDtos = _context.Movies.ToList().Select(Mapper.Map<Movie,MovieDto>);
+            return Ok(movieDtos);
         } 
         //GET
         // /api/movies/id
@@ -40,7 +41,8 @@ namespace Vidly.Controllers.Api
         }
         //POST
         // /api/movies/
-        public IHttpActionResult EditMovie(MovieDto movieDto)
+        [System.Web.Http.HttpPost]
+        public IHttpActionResult CreateMovie(MovieDto movieDto)
         {
             if (!ModelState.IsValid)
             {
@@ -55,8 +57,13 @@ namespace Vidly.Controllers.Api
         }
         //PUT
         // /api/movies/id
+        [System.Web.Http.HttpPut]
         public IHttpActionResult EditMovie(int id, MovieDto movieDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             var movieInDb = _context.Movies.Single(m => m.Id == id);
             if (movieInDb == null)
             {
@@ -65,11 +72,12 @@ namespace Vidly.Controllers.Api
             
             Mapper.Map<MovieDto, Movie>(movieDto, movieInDb);
             _context.SaveChanges();
-            return Ok("Successfully added a new Movie");
+            return Ok();
         }
         //DELETE
         // /api/movies/id
-        public void DeleteMovie(int id)
+        [System.Web.Http.HttpDelete]
+        public IHttpActionResult DeleteMovie(int id)
         {
             var movieInDb = _context.Movies.Single(m => m.Id == id);
             if (movieInDb == null)
@@ -78,6 +86,8 @@ namespace Vidly.Controllers.Api
             }
             _context.Movies.Remove(movieInDb);
             _context.SaveChanges();
+
+            return Ok();
         }
     }
 }
