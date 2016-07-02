@@ -116,3 +116,34 @@ SignInManager...)
 		>>> That's PROPER WAY to SEED our DB w/ USERS & ROLES
 		>>> The way they show you w/ SEED method of Configuration class
 		-> It's risky because we need to switch connection strings
+			
+			/*	===	SEEDING USERS & ROLES	===	*/
+
+- > One option: we could hide elements depending on privileges - if you have
+complex view you'll have probably too many if...else statements so it will
+be better to create entierly new view for users w/ less privileges
+- > Movies:
+	>> Hide new movie button
+	>> Change linked Movie name to redirect to details instead of edit page
+	>> Hide 3rd column (delete)
+	>> Since we're using Jquery to render tables so this would be a mess
+	>> We'll create a new view for staff.
+	>> Views- mOvies - index - duplicate to ReadOnlyList and for consistency
+	rename Index to List
+	>> ROL.cshtml 
+		>>> Delete AL for new button
+		>>> Delete 3rd column 
+		>>> 1st column in Jq delete 1st render function
+		>>> 3rd coumn || delete code that handles delete
+	>> Controllers - movies controller we use User property of controller
+		Which gives us access to the current user
+	if(User.IsInRole("CanManageMovies")) - return List View
+	Otherwise ROL
+	>> That's only half, because we can stll get to /New view manually
+	>> We can also use Postman to CRUD db 
+	>> In Movies controller we assign appropriate [Authorize(Roles = "CanManageMovies,...,...")] to AR
+	>> That applies to actions of our movie api as well(exercise)
+	>> We need to fix adding magic string "CanManageMovies"
+		>>> Models- Class RoleName.cs - static class
+			->>> public const string CanManageMovies = "CanManageMovies";
+			-This way we only modify name in one place

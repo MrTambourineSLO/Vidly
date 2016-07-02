@@ -1,0 +1,58 @@
+﻿@using Vidly.Models
+@model IEnumerable<Vidly.Models.Movie>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Movies</h2>
+
+
+<table class="table table-bordered table-hover" id="movies">
+    <thead>
+        <tr>
+            <th >Movie Title</th>
+            <th>Genre</th>
+            
+        </tr>
+        
+    </thead>
+    <tbody>
+    </tbody>
+
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            var table = $("#movies");
+            table.DataTable({
+
+                //Ajax call to api
+                ajax:
+                {
+                    url: "/api/movies",
+                    dataSrc: ""
+                },
+                //Response objects
+                columns:
+                [
+                {
+                    data: "Name",
+                    render: function (data, type, movie) {
+                        return movie.name;
+                    }
+                },
+                {
+                    data: "genre.genreName"       
+                }
+                ]
+            });
+                    
+                
+            
+            
+        });
+    </script>
+}
