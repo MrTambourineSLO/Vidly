@@ -15,9 +15,9 @@ namespace Vidly.App_Start
             // Domain to Dto
             Mapper.CreateMap<Customer, CustomerDto>();
             Mapper.CreateMap<Movie, MovieDto>();
-                //For special case MembershipTypeDto
+                //For special case MembershipTypeDto, GenreDto
             Mapper.CreateMap<MembershipType, MembershipTypeDto>();
-            
+            Mapper.CreateMap<Genre, GenreDto>();
             //Dto to Domain
             //Id is a key property of domain classes and should not be changed
             //Here we tell automapper to ignore id assignments

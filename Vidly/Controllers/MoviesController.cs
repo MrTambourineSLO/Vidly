@@ -66,9 +66,7 @@ namespace Vidly.Controllers
 
         public ActionResult Index()
         {
-            var movies = _context.Movies.Include(c => c.Genre).ToList();
-
-            return View(movies);
+            return View();
         }
         [Route("movies/details/{id}")]
         public ActionResult Details(byte id)

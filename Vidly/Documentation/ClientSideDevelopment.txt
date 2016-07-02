@@ -256,7 +256,7 @@ HTML on the client (ie we return JSON instead of Markup)
 	we do not need to fetch customers from DB anymore
 
 - > Since we don't have a model we also get rid of our if...else block
-- > When we call #().DataTable({
+- > When we call table.DataTable({
 	we need to provide configuration object here
 });
 
@@ -278,7 +278,7 @@ HTML on the client (ie we return JSON instead of Markup)
 	}
 		>>> We'd need to provide dataSrc as "Customers"
 	
-	>> In our case response is array of objects ie source of data
+	>> In our case, response is array of objects ie source of data
 	2.columns: [
 		//For each column we supply an object and it it 
 		//various properties in particular column
@@ -345,3 +345,27 @@ and store it in variable table)
 	table.row(reference to the tr - ie button.parents("tr") then we 
 	call remove method on it; finally we call draw() method on it to 
 	redraw the table
+
+			/*	===	DATA TABLE DISCUSSION POINTS	===	*/
+
+- > Right now we're calling customers in bulk which works fine up to about
+1000 objects of our size.
+- > If we send a lot of objects we're better of doing pagination, sorting
+and searching on server
+	>>	In DataTables you'd then have to enable server side processing
+- > We have also poor-ish separation of concerns in our JS code...
+
+
+			/*	===	SPAs	===	*/
+
+- > w/ SPAs we'd render entire site on client, ie we wouldn't be using any
+razor views
+- > We only send ajax requests to api and only update part of the page so 
+we essentially have one page which gets updated constantly
+- > Essentially we have bunch of restful apis on server and on client
+we use Angular, Backbone or Ember
+
+			/*	===	EXERCISE	===	*/
+
+- > Add data tables to our movies list
+	> Implement deleting movie using bootbox and ajax
