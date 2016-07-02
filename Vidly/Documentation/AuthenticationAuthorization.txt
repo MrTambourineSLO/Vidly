@@ -147,3 +147,26 @@ be better to create entierly new view for users w/ less privileges
 		>>> Models- Class RoleName.cs - static class
 			->>> public const string CanManageMovies = "CanManageMovies";
 			-This way we only modify name in one place
+
+
+			/*	===	ADDING PROFILE DATA	===	*/
+
+- > Let's introduce a new filed in Register (ie Driving License)
+- > We always start w/ the domain - Models > IdentityModels - at top of class (ApplicationUser)
+new prop - string DrivingLicense & Decorate it w/ [Required] & [StringLength(255)]
+- > Now we changed domain so we add a migration:
+"AddDrivingLicenseToAppUser"
+Update-Db
+	>> What will happen to existing Users?
+	EF will set them to "" &! null
+- > Domain Model and Persistance Store(DB) are now updated
+- > Now View: "Register.cshtml"
+	>> Copy& paste before the submit button one of other form.groups
+	Change Email to DrivingLicense - but we need to add it in RegisterVM
+	first
+	>> prop string DrivingLicense + [Required] [Display(Name="Driving License")]
+	>> Before we used Required in Identity Models to override Conventions of EF
+	while migrating DB, here we're working on VM.
+	>> When form is posted we need to get this license & put it in domain object
+	>> AccountController - Register (Action)
+		When initializing application User we inititalize Driving License as well
