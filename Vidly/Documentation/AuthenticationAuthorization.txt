@@ -210,3 +210,12 @@ called OAuth (Open Authorisation)
 		*ExternalLoginConfirmation.cshtml - add DrivingLicense field +
 		Add it to ExternalLoginConfirmationViewModel
 		Then we go to action and add it to creation of new application user
+
+			/*	===	EXERCISE	===	*/
+- > Add new field called PHONE required, limited to 15 chars
+
+- > Limit movie management operations to our store manager
+[Don't forget the API controller as well]
+
+- > Take out VM classes we work w/ as part of this exercise
+(External login .... VM) and put them in separate file, same for Identity Models
