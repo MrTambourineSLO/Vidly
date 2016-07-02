@@ -1,0 +1,118 @@
+﻿			/*	===	AUTHENTICATION & AUTHORIZATION	===	*/
+					/*	===	THE PROBLEM	===	*/
+
+
+- > This app is designed to run in store:
+	>> Person @ counter will use it to record:
+	customers,rentals, returns...
+	>> All above should be restricted to logged-in user
+- > Additionally we want to add a role "Store Manager" to 
+limit CUD movies/customers
+
+			/*	===	AUTHENTICATION OPTIONS	===	*/
+
+- > When we create project in "Change authentication" we have 
+4 different options:
+	>> No authentication
+	>> Individual User Accounts
+		>>> Most common - we'll examine this one.
+	>> Organizational Accounts
+		>>> For Active Directory users
+	>> Windows Authentication
+		>>> Intranet authentication which automatically
+			logs in user in app when they login in Windows
+
+- > We have Register&Login at top right of our app by default
+	>> We can register automatically
+	>> We'll examine this options in detail and see how we can
+	customize them based on our needs.
+			
+			/*	===	ASP.NET IDENTITY	===	*/
+
+- > Registration feature is part of ASP.NET IDENTITY
+- > In our references we have 3 assemblies in Microsoft.AspNet.Identity:
+	>> Core
+	>> EF
+	>> Owin
+- > ASNI has several DOMAIN CLASSES (eg IndentityUse, Role...) and 
+several APIs/Services to work with them(UserManager,RoleManager,
+SignInManager...)
+	>> Both of the above internally talk to another group of classes in
+	PERSISTENCE layer (eg UserStore, RoleStore)
+		>>> ASPI provides implementation of these persistence layer using
+		EF and SQL but we can also plugin our own implementation of 
+		PERSISTENCE STORE like NoSQL DB
+
+- > In our initial migration we got plenty of tables in migration
+(AspNetUserRoles...) - these are based on DOMAIN MODEL of ASNI framework
+	>> We can see them in Models>IdentityModels.cs
+	DbContext there derives from IdentityDbContext and ApplicationUser
+	derives from IdentityUser
+	>> Both those are part of ASNI
+- > In Controllers>AccountController.cs
+	>> Nr of actions - register, login, logout...
+	>> In Register method we have async functionallity to automatically
+	login a user - we can comment it in and comment out below code to
+	wait for user confirmation mail.
+
+			/*	===	RESTRICTING ACCESS	===	*/
+
+- > We have attribute (filter) [Authorize]
+	>> Applied to Action & Called by MVC FW before & after action ||
+	result are executed.
+- > Let's apply it to index of customers, we're redirected to Login
+	In URL - we have query string "ReturnURL" which says where we'll
+	be redirected once we login
+	(%2F is '/' in query string)
+- > We can also apply this filter on Controller || Globaly
+	>> Globaly App_Start - FilterConfig.cs 
+	method filters.Add() is where we put filters
+	ergo: filters.add(new AuthorizeAttribute());
+	>> Say we want to make homepage accessible to non registered users:
+		>>> HomeC. [AllowAnonymous]
+
+
+				/*	===	SEEDING USERS & ROLES	===	*/
+
+
+- > Movie management ops will be restricted to StoreManagers.
+- > 1st we create a role 
+	>> First we register a GUEST USER (eg guest@vidly.com)
+	>> IN VS - Controllers/ AccountController.cs - Register method:
+		>>> Just for demo we'll assign every new user to StoreManager role
+		>>> if(result.Succeeded) // if user is successfully created:
+			//Temp Code:
+			//We said that to work w ASPI we use Manager classes (in Api/Service)
+			//1st we create a ROLE store (which lays in lower layer)
+			//Role store is T class where we specify the role in app
+			//We don't have our own specific role class so we use one
+			//that comes w/ asp Identity
+			//In CTOR we pass new ApplicationDbContext()
+			var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+			//Now that we have store we create a role manager
+			var roleManager = new RoleManager<IdentityRole>(roleStore);
+			//To create a role we call CreateAsync on roleManager:
+			//because we set generic param to identityRole we have to pass
+			//an instance in CTOR
+			//Name of role should be descriptive of permissions
+			//Because it's an async method we need to await it
+			await roleManager.CreateAsync(new IdentityRole("CanManageMovies"));
+			//Now we assign this new user to our new role
+			await UserManager.AddToRoleAsync(user.Id,"CanManageMovies");
+		>>> Now we register a new user (admin@vidly.com)
+		>>> After registration we *IMMEDIATELY* remove those 4 lines
+	>> We want these 2 users an our new role to be deployed w/ an application
+		>>> We do that w/ Code 1st Migration:
+		>>> PM> add-migration SeedUsers
+		>>> In empty migration Up() we'll use SQL to add those in DB
+		>>> Quick way: Solution Explorer, Show all, App_Data, .mdf,
+		AspNetUsers - Show Data - ShiftSelect both - RCLICK - Script
+		we can Copy/Paste all in singe Sql(@"") (w/ @)
+		>>> We do same for AspNetRoles % AspNetUserRoles
+		>>> Now we delete all records from db (AspNetRole & AspNetUsers) and run this migration to
+		populate it again (update-database)
+		>>> If we run this migration on another (testin || production DB)
+		we'll have exact same setup
+		>>> That's PROPER WAY to SEED our DB w/ USERS & ROLES
+		>>> The way they show you w/ SEED method of Configuration class
+		-> It's risky because we need to switch connection strings

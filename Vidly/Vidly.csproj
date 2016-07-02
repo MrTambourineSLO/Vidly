@@ -242,6 +242,10 @@
     <Compile Include="Migrations\201606281157167_PopulateGenres.Designer.cs">
       <DependentUpon>201606281157167_PopulateGenres.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607021613334_SeedUsers.cs" />
+    <Compile Include="Migrations\201607021613334_SeedUsers.Designer.cs">
+      <DependentUpon>201607021613334_SeedUsers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -368,6 +372,7 @@
     <Content Include="Content\DataTables\images\sort_desc.png" />
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Documentation\AuthenticationAuthorization.txt" />
     <Content Include="Documentation\BuildingForms.txt" />
     <Content Include="Documentation\ClientSideDevelopment.txt" />
     <Content Include="Documentation\Fundamentals.txt" />
@@ -554,6 +559,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606281157167_PopulateGenres.resx">
       <DependentUpon>201606281157167_PopulateGenres.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607021613334_SeedUsers.resx">
+      <DependentUpon>201607021613334_SeedUsers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
