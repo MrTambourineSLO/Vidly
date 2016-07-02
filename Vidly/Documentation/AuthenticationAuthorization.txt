@@ -170,3 +170,43 @@ Update-Db
 	>> When form is posted we need to get this license & put it in domain object
 	>> AccountController - Register (Action)
 		When initializing application User we inititalize Driving License as well
+
+
+			/*	===	REGISTERING W/ SOCIAL MEDIA	===	*/
+					/*	===		OAuth	===	*/
+
+- > External authentication providers(Ms,FB,Google&c) use Authentication provider
+called OAuth (Open Authorisation)
+- > How it works:
+	>> 1st We need to register our app w/ FB, FB will give us API key & Secret (kinda
+	like UserName & Password)
+	>> When one clicks on FB login on our site, we'll redirect him to FB & Use API key
+	& Secret - to prevent someone sniffing those details we use HTTPS
+	>> Because we're registered w/ FB, FB will know about us and will send us
+	{authorization token} + redirect user back
+		>>> Token tells that FB could successfully authenticate this user
+	>> When we get back this token we send it back to FB along with key & secret
+	becasue Hacker could send random AuthToken to us so we verify it really came from FB
+		>>> After FB confirms, we get an {access token}
+		>>> w/ Access Token we can access some parts of the user's profile
+	>> All those complexities already exist in ASP.NET indentity
+- > In practice:
+	2 steps we need to follow:
+	* Enable SSL
+		Project - F4 - SSL Enabled = True - COPY
+		Project - PROPERTIES - WEB - Project url: PASTE
+		Run - Install Certificate when prompted
+		PROBLEM:
+			Our old http site is still accessible
+			App_Start - FilterConfig - filters.Add(new RequireHttpsAttribute());
+	* Register our app w/ FB
+		Developers.facebook.com
+		MyApps -Add New - WWW -Vidly - Create New FB App ID - SiteURL - input it w/ Localhost
+		Next - Skip TO Developer Dashbord
+		Copy App ID & App Secret
+	* In VS: startupAuth.cs
+		Uncoment UseFacebookAuthentication and copy paste id and secret
+		In FB register we need to add Driving License as well:
+		*ExternalLoginConfirmation.cshtml - add DrivingLicense field +
+		Add it to ExternalLoginConfirmationViewModel
+		Then we go to action and add it to creation of new application user
