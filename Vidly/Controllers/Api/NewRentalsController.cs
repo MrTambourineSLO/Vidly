@@ -13,7 +13,7 @@ namespace Vidly.Controllers.Api
         [HttpPost]
         public IHttpActionResult NewRental(RentalDto rentalDto)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

@@ -22,7 +22,7 @@ leak into backend design.)
 		>>> API CONTROLLER (we're going to use as we have so far
 		it has also advantage - we can build different types of clients that
 		consume this API)
-	=> EXERCISE - We know I/O for this case.
+	=> EXERCISE 1 - We know I/O for this case.
 	Create an API frontend will call when user submits the form for New Rental Use Case:
 	Just create ACTION w/ correct INPUT & OUTPUT - Implementation = empty || simple
 	response
@@ -35,3 +35,54 @@ leak into backend design.)
 		>>> Does our current domain model support rentals?
 		(We have Movie and Genre model)
 		>>> No? Nothing here describes a rental
+		UML
+		CUSTOMER		---rents--->*		MOVIE
+		CUSTOMER	*<---can be rented---	MOVIE
+		-> Ergo: we need MANY-MANY association between these 2 classes
+		-> The association NEEDS ATTRIBUTES!!!
+		**************
+		*	RENTAL	 *
+		**************
+		|DateRented	 |
+		|DateReturned|
+		|			 |
+		|____________|
+			>> So Association(Rental) needs to know when movie was
+			rented and when it was returned
+			>> Rental is association class in UML - and it's named
+			after association. So if association is "rents" and
+			"can be rented" - association class' name is Rental
+		-> Implementation is actually easy - our Rental class
+		should have properties depicted as well as 2 navigation
+		properties (ergo CUSTOMER and MOVIE) + as per EF every 
+		table needs an ID
+	=> EXERCISE 2 - Add Rental to our Domain Model and use CF migration
+	to bring DB up to date
+
+			/*	===	BUILDING THE SIMPLEST API	===	*/
+
+EXERCISE 2 SOLUTION:
+My solution:
+		public int Id { get; set; }
+        [Required]
+        public int CustomerId { get; set; }
+        [Required]
+        public int MovieId { get; set; }
+        public DateTime DateRented { get; set; }
+        public DateTime DateReturned { get; set; }
+        public Movie Movie { get; set; }
+        public Customer Customer { get; set; }
+Video solution:
+		public int Id { get; set; }
+        public DateTime DateRented { get; set; }
+        public DateTime? DateReturned { get; set; }
+        [Required]
+		public Movie Movie { get; set; }
+        [Required]
+		public Customer Customer { get; set; }
+		-> NOTE: DateReturned is NULLABLE
+		-> NOTE: We didn't ADD IDs but straight up OBJECTS
+		WHY? EF will make sure that DB ACCEPTS REFERENCES (as in FK)
+		FOR THOSE TABLES
+Next: *In ApplicationDbContext we add DbSet of Rental
+	  * Create migration and update db
