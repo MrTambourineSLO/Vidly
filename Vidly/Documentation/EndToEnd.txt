@@ -86,3 +86,12 @@ Video solution:
 		FOR THOSE TABLES
 Next: *In ApplicationDbContext we add DbSet of Rental
 	  * Create migration and update db
+	  * Now we're ready to IMPLEMENT an API
+	  : Start a happy path - forget Edge Cases, Validations etc
+	  -> In our action we need to get Customer and Movies based on the IDs
+	  our DTO gives us
+	  -> Then for each movie we need to create a new Rental object and 
+	  get it to a DB
+	=> EXERCISE 3:
+	Implement the simplest API then Use POSTMAN to call it, make sure that
+	you get all movie IDs in a DB
