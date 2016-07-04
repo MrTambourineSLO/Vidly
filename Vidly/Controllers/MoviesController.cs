@@ -114,6 +114,8 @@ namespace Vidly.Controllers
             {
                 //Add date time in backend to prevent SQL Injection
                 movie.Added = DateTime.Now;
+                //Initialize NumberAvailable
+                movie.NumberAvailable = movie.NumberInStock;
                 _context.Movies.Add(movie); 
             }
             else

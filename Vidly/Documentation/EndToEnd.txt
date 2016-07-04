@@ -95,3 +95,40 @@ Next: *In ApplicationDbContext we add DbSet of Rental
 	=> EXERCISE 3:
 	Implement the simplest API then Use POSTMAN to call it, make sure that
 	you get all movie IDs in a DB
+	(See previous commit for solution - it's commented in the code)
+Next: * In creating a rental we have to take into account AVAILABILTY
+		of the movie
+
+		***************
+		*	MOVIE	  *
+		***************								_______________
+		|NumberInStock|	--------------------------*|	RENTAL	   |
+		|			  |							   |_______________|
+		|			  |
+		|_____________|
+
+		*Does our current DM allow us to track the availability of the movie?
+		-> It does (Ergo- Availability = NumberInStock-ActiveRentals)
+		-> BUT - this would require a lot of calls to DB for calculating 
+		Availability
+		-> Better solution: 
+		*****************
+		*	MOVIE	    *	Initially NumberAvailable is same as number
+		*****************	In stock, but when customer rents we decrease
+		|NumberInStock  |	it by 1. Same for when customer returns it.
+		|			    |
+		|NumberAvailable|			  
+		|_______________|
+
+=> EXERCISE 4:
+	Update availability of the movies - TIP: Add this new prop to DM, update-db
+	modify logic in our Action
+	-> We have to add new property NumberAvailable to Movie DM
+	-> We add migration and in Up();
+	we add 
+	 Sql("UPDATE Movies SET NumberAvailable = NumberInStock");
+	 to set NumberAvailable automatically for existing records.
+	 In MovieController's Save method add NumberAvailable = NumberInStock on an
+	 instance of the movie.
+	 Also in Api MovieController's Create Movie make sure to initialize that value.
+	 In api's for loop we add movie.NumberAvailable--;

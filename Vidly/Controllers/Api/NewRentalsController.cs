@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -46,10 +47,13 @@ namespace Vidly.Controllers.Api
                     {
                         DateRented = DateTime.Now,
                         Customer = customer,
-                        Movie = movie
+                        Movie = movie,
+                        
+                        
                     };
                     _context.Rentals.Add(curRental);
-                    
+                    //Change number available in Domain
+                    movie.NumberAvailable--;
                 }
                 //It's most efficient if SaveChanges() is outside the Loop
                 _context.SaveChanges();

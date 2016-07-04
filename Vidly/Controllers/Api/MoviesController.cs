@@ -52,9 +52,12 @@ namespace Vidly.Controllers.Api
             }
             //Kreiraj nov movie iz DTO
             var newMovie = Mapper.Map<MovieDto, Movie>(movieDto);
+            //Dodaj NumberAvailable = NumberInStock
+            newMovie.NumberAvailable = newMovie.NumberInStock;
             _context.Movies.Add(newMovie);
             _context.SaveChanges();
             movieDto.Id = newMovie.Id;
+            
             return Created(new Uri(Request.RequestUri +"/"+movieDto.Id ),movieDto );
         }
         //PUT
