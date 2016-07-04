@@ -240,3 +240,8 @@ between .typeahead (w background color) down to .tt-suggestion p
  >>Content - Add - StyleSheet "typeahead.css"- paste
  >> Include it in style bundles
  - > Now we're done w/ plumbing and we have to use a plugin
+> On examples page we click on "Remote" (ie example of typeahead w/ remote
+datasource (like an API))
+	>> Copy & Paste JS 
+	>> In our view in scripts section we use standard Jq initialization and 
+	inside we paste this code.
