@@ -226,3 +226,17 @@ helpers would build traditional html form
 	Text = submit
 - > Later we'll add autocompletion
 - > Now add link to this form on navigation bar (_Navbar.cshtml)
+
+
+				/*	===	ADDING AUTO-COMPLETION	===	*/
+
+- > jQ plugin Type-Ahead by Twitter
+PM> install-package Twitter.Typeahead
+BundleConfig - add /Scripts/typeahead.bundle.js
+- > Now we need to fetch some CSS from their github examples because non are 
+included in the bundle
+> There we view page source go to style and copy everything
+between .typeahead (w background color) down to .tt-suggestion p
+ >>Content - Add - StyleSheet "typeahead.css"- paste
+ >> Include it in style bundles
+ - > Now we're done w/ plumbing and we have to use a plugin
