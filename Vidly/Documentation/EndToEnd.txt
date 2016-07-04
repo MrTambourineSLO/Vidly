@@ -245,3 +245,21 @@ datasource (like an API))
 	>> Copy & Paste JS 
 	>> In our view in scripts section we use standard Jq initialization and 
 	inside we paste this code.
+	We rename the functions appropriately:
+	*Bloodhound is the suggestion engine behind typeahead - it encapsulates all
+	business logic for autocompletion
+	*datumTokenizer prop: essentialy - look at value property of customers and use
+	whitespace to tokenize them - these tokens are required for bloodhound
+		- We change "value" to "name"
+	*prefetch prop is used for providing data upon initialization and prevents
+	additional requests to server - but we'll delete it because we're not gonna use it.
+	*We change the remote url to /api/customers?query=%QUERY - this is varaible
+	'specified in the wildcard' - what user types in the textbox will be placed there at 
+	runtime
+		W/ this later we can filter our customers and return those who match the query
+	*Next is a reference to our textbox, we change it to #customer ie our textbox - we also
+	give our input ID of customer
+	*First argument of TA method is now null but we can pass an object and configure the
+	behaviour of TA - example {minLength: 3, highlight: true}
+	*We change name property to "Customers"
+	*Display is what prop of our customers we should display in suggestion list (ie "name")
