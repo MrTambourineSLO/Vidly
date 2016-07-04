@@ -405,6 +405,7 @@
     <Content Include="Documentation\AuthenticationAuthorization.txt" />
     <Content Include="Documentation\BuildingForms.txt" />
     <Content Include="Documentation\ClientSideDevelopment.txt" />
+    <Content Include="Documentation\EndToEnd.txt" />
     <Content Include="Documentation\Fundamentals.txt" />
     <Content Include="Documentation\Implementing_Validation.txt" />
     <Content Include="Documentation\PerformanceOptimization.txt" />

@@ -53,7 +53,7 @@ namespace Vidly
             //app.UseTwitterAuthentication(
             //   consumerKey: "",
             //   consumerSecret: "");
-
+            // TODO: Add secret & appId to static class and ignore it in git.
             app.UseFacebookAuthentication(
                appId: "***REMOVED***",
                appSecret: "***REMOVED***");
