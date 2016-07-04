@@ -180,3 +180,49 @@ Our API is not public, it's just there so that frontend can call it.
 	and make it unavailable
 - 4th - Movie's not available
 	- We won't do an extra check.
+
+			/*	===	BUILDING THE FRONT-END	===	*/
+
+- > A different way to build forms, previously we built Html helper
+methods such as BeginForm, LabelFor &c
+	>> In previous (traditional HTML form) we used user has to wait
+	for server to respond and browser can go blank for few seconds
+	>> We'll use AJAX - we'll call the serveer ASYNC in the background
+- > When User clicks a lin we call server in backgrund, get the data for
+target page, generate markup on client and use JS to refresh the content area.
+- > Every browser has object called XMLHttpRequest (XHR) which allows us to call
+server async in background - w/o posting the page to the server using form.
+jQuery AJAX is abstraction over this object and makes it easier:
+$.ajax(url)
+	.done(function(result){
+	//Do something w/ the result
+	});
+- > These days we often get only data from server and generate HTML on client
+(that's why we use it when working w/ APIs)
+
+-> 1st we add new "RentalsController" to our controllers.
+- > Then we create a view w/ R#
+- > We won't create Html helpers but just raw html, becasue
+helpers would build traditional html form
+	>> Action attribute is our action but we won't use it
+	>> We also have helper Ajax.BeginForm() - but problem is that it's
+	used to call MVC controllers, not API controllers
+- > ZEN CODING: Cool technique to quickly create markup:
+	div.form-group>label+input[type="text"].form-control + TAB
+	(part of web-essentials plugin)
+	//this translates to:
+	/*
+		A want a div(DIV) with a class(.) form-group(FORM-GROUP)
+		inside this div(>) I want to have a label (LABEL) and next to(+)
+		this label I want to have an input(INPUT) with the attribute type set
+		to text([type="text"] and class form-control(.form-control)
+	*/
+	We manually set label to customer
+	-then below this div still in form
+	div.form-group>label+input[type="text"].form-control 
+	label= movie
+	-Finally below:
+	button.btn.btn-primary
+	Text = submit
+- > Later we'll add autocompletion
+- > Now add link to this form on navigation bar (_Navbar.cshtml)
