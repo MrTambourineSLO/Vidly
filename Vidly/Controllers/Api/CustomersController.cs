@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using AutoMapper;
 using Vidly.DTOs;
 using Vidly.Models;
@@ -99,6 +100,20 @@ namespace Vidly.Controllers.Api
 
             return Ok();
         }
+        //Input is Customer & Movie ID
+        // Return simple response (don't worry about implementation just yet)
+         // eg: /reviews/5
+        //[HttpGet]
+        //[Route("api/customers/rentmovie/{customerId}/{movieId}")]
+        //public IHttpActionResult RentMovie(int customerId, int movieId)
+        //{
+        //    //Perform check if customerId is valid
+        //    //Perform check if movieId is valid
+        //    //Perform DB updates
+        //    //Return customer info (just a mock example)
+        //    var rentingCustomer = _context.Customers.SingleOrDefault(c => c.Id == customerId);
+        //    return Ok(Mapper.Map<Customer,CustomerDto>(rentingCustomer));
+        //}
         
         
     }

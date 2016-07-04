@@ -1,0 +1,37 @@
+﻿			/*	===	END TO END DEVELOPMENT	===	*/
+
+- > IRL Scenario : Extend Vidly & add the ability to RECORD RENTALS
+- > Before coding we need to UNDERSTAND how this use case works (talking to
+client, who we're working for)
+- > Example: Customer comes to the counter & hands movie to staff member,
+	>> Staff member looks up customer in application & then adds each movie
+	to the list of movies customer is about to rent - that's the end of this
+	transaction
+- > APPROACH: We can start from FRONT||BACK END (it's matter of personal preference.
+Mosh advises starting from BE though - because complexity from frontend can
+leak into backend design.)
+- > BACKEND: we focus on I/O of the application
+	>> INPUT: id of CUSTOMER & MOVIES (how we get to customer info is for now
+	irrelevant)
+	Like making a building - we first focus on big picture - "skeleton" where are
+	tables and chairs is at this point not relevant.
+	>> OUTPUT: No output (we don't give customer a check or order/transaction ID )
+	>> we need ACTION: that frontend is going to call
+		it can either be put (depending if we're returning markup || data) in:
+		>>> MVC CONTROLLER or
+		>>> API CONTROLLER (we're going to use as we have so far
+		it has also advantage - we can build different types of clients that
+		consume this API)
+	=> EXERCISE - We know I/O for this case.
+	Create an API frontend will call when user submits the form for New Rental Use Case:
+	Just create ACTION w/ correct INPUT & OUTPUT - Implementation = empty || simple
+	response
+	 * I created it like this in CustomersController
+	 * The right way was to create a new "NewRentalsController" in Api Controllers
+	 w/ action which accepts New RentalDto (decorated w/ HTTPPOST)
+		>> RentalDto has two props - int CustomerId and List<int> MovieIds
+	>> Implementation of this API
+	>> 1st Look at domain models
+		>>> Does our current domain model support rentals?
+		(We have Movie and Genre model)
+		>>> No? Nothing here describes a rental
