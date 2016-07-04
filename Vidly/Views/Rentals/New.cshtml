@@ -14,14 +14,15 @@
     </div>
     <div class="form-group">
         <label>Movie</label>
-        <input type="text" value="" class="form-control"/>
+        <input id="movies" type="text" value="" class="form-control"/>
     </div>
     <button class="btn btn-primary">Submit</button>
 </form>
 @section scripts
 {
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            var vm = {};
             var customers = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -39,6 +40,30 @@
                 name: 'customers',
                 display: 'name',
                 source: customers
+            }).on("typeahead:select",function(e, customer) {
+                vm.CustomerId = customer.id;
+            });
+            var movies = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/movies?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+
+
+            $('#movies').typeahead({
+                minLength: 3,
+                highlight: true
+            },
+            {
+               name: 'movies',
+               display: 'name',
+               source: movies
+           }).on("typeahead:select", function (e, movie) {
+                vm.MovieId = movie.id;
             });
         });
     </script>

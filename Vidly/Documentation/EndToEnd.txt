@@ -263,3 +263,12 @@ datasource (like an API))
 	behaviour of TA - example {minLength: 3, highlight: true}
 	*We change name property to "Customers"
 	*Display is what prop of our customers we should display in suggestion list (ie "name")
+	-> Next we need to make sure that when user selects some name from AC dropdown
+	that it can be save somewhere so we chain On method and watch "typeahead:select" evenr as per
+	documentation of TA. Then we provide callback as second argument w/ 2 params e(for the event)
+	and customer which is the selected customer - now we have to store it somewhere.
+	At top we make new var vm = {}; (vm as in viewmodel)
+	In callback from before we set vm.CustomerId = customer.Id;
+	Later we gonna send this vm to our API
+
+- > EXERCISE 5 > Create typeahead plugin for the movies & just display selection in console
