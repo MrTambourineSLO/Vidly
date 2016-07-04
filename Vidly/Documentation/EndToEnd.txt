@@ -132,3 +132,51 @@ Next: * In creating a rental we have to take into account AVAILABILTY
 	 instance of the movie.
 	 Also in Api MovieController's Create Movie make sure to initialize that value.
 	 In api's for loop we add movie.NumberAvailable--;
+
+
+				/*	===	EDGE CASES	===	*/
+
+- > 4Edge Cases:
+*CustomerId is invalid
+*No MovieIds
+*1||> MovieIds are invalid
+*1 || > Movies are not available
+
+- > Here we have 2 POV (no right || wrong)
+*Defensive
+- 1st EC - Customer is not valid:
+	>> We should change Single to SingleOrDefault and
+	then check if Customer == null and return 
+	BadRequest("Customer not available")
+- 2nd EC - We have no Movies in our DTO
+	if(newRental.MovieIds.Count == 0){
+		return BadRequest("No movie Ids have been given")
+	}
+	PS - This case should be first, because it's no use querying
+	DB if we don't have a customer
+- 3rd - One ||> Movies are not available
+	-1st we get those movies like so:
+	var movies = _context.Movies.Where(m => rentalDto.MovieIds.Contains(m.Id)).ToList();
+	then
+	if(movies.Count != rentalDto.MovieIds.Count){
+		return BadRequest("One or more movie(s) has a bad Id")
+	}
+- 4th - Movie's not available
+	in foreach block we already have, at the very beginning
+	if(movie.NumberAvailable <= 0){
+		return BadRequest("Movie is not available")
+	}
+
+*Optimistic
+(Defensive API is useful if it's public and used by a lot of people)
+Defensive adds whole bunch of if statements and pollutes our code
+Our API is not public, it's just there so that frontend can call it.
+- 1st EC - Customer is not valid:
+	- We use Single as before and erase if block
+- 2nd EC - We have no Movies in our DTO
+	- We won't do an extra check on top
+- 3rd - One ||> Movies are not available
+	- Interesting edge case - hacker can call our api 100 times
+	and make it unavailable
+- 4th - Movie's not available
+	- We won't do an extra check.
