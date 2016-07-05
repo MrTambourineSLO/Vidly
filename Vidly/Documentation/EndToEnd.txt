@@ -297,3 +297,19 @@ datasource (like an API))
 	this prop is: movieIds: [] // an empty array
 	>>Back in our callback function we set:
 	vm.movieIds.push(movie.id);
+
+				/*	===	IMPROVING THE LOOK & FEEL	===	*/
+
+- > Inline Textboxes should be on separate line, if we explore element:
+when we apply twitter-typeahead it puts both elements in a <span>
+(we can see that in reallity we have like 3 stacked textboxes).
+	>> From documentation we can see that they wrap this textbox in another
+	Div that has position:relative;
+	>>So above that input we make a new div w/ class tt-container,
+	same w/ a autotext box input
+	>> In typeahead.css we add this new class and give it position:relative;
+- > Another issue is that movies are appearing as bulletpoints 
+When we appended li we forgot a BS class list-group-item so we add it
+	>> Width is too wide though, so we use BS grid system to limit the
+	>> Around UL we add div.row>div.col-md-4.col-sm-4 (so for medium & small devices)
+	

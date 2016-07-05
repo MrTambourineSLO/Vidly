@@ -7,16 +7,26 @@
 }
 
 <h2>New Rental Form</h2>
-<form >
+<form>
     <div class="form-group">
         <label>Customer</label>
-        <input id="customers" type="text" value="" class="form-control"/>
+        <div class="tt-container">
+            <input id="customers" type="text" value="" class="form-control" />
+        </div>
+
     </div>
     <div class="form-group">
         <label>Movie</label>
-        <input id="movie" type="text" value="" class="form-control"/>
+        <div class="tt-container">
+            <input id="movie" type="text" value="" class="form-control"/>
+        </div>
     </div>
-    <ul id="movies" class="list-group"></ul>
+    <div class="row">
+        <div class="col-sm-4 col-md-4">
+            <ul id="movies" class="list-group"></ul>        
+        </div>
+    </div>
+    
     <button class="btn btn-primary">Submit</button>
 </form>
 @section scripts
@@ -66,7 +76,7 @@
                display: 'name',
                source: movies
            }).on("typeahead:select", function (e, movie) {
-               $("#movies").append("<li>" + movie.name + "</li>");
+               $("#movies").append("<li class='list-group-item'>" + movie.name + "</li>");
                $("movie").typeahead("val", "");
 
                 vm.movieIds.push(movie.id);
