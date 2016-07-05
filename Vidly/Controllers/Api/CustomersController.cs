@@ -22,15 +22,20 @@ namespace Vidly.Controllers.Api
             
         }
         //GET /api/customers
-        public IHttpActionResult GetCustomers()
+        public IHttpActionResult GetCustomers(string query = null)
         {
             //Don't forget to cast to list
             //We perform eager loading w/ include from Systam.Data.Entity
-            var customerDtos = _context.Customers
-                .Include(i => i.MembershipType)
+            var customersQuery = _context.Customers
+                .Include(i => i.MembershipType);
+
+            if (!String.IsNullOrWhiteSpace(query))
+                customersQuery=customersQuery.Where(q => q.Name.Contains(query));
+
+            var customerDto=customersQuery
                 .ToList()
                 .Select(Mapper.Map<Customer,CustomerDto>);
-            return Ok(customerDtos);
+            return Ok(customersQuery);
         }
         //GET /api/customers/id
 

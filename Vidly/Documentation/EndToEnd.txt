@@ -313,3 +313,19 @@ When we appended li we forgot a BS class list-group-item so we add it
 	>> Width is too wide though, so we use BS grid system to limit the
 	>> Around UL we add div.row>div.col-md-4.col-sm-4 (so for medium & small devices)
 	
+					/*	===	FILTERING RECORDS	===	*/
+
+- > Right now if we type something we see also some other records besides those 
+that are matching (since we're not filtering records on the server).
+- > In VS - CustomersController(api)
+	>> GetCustomers() action we add an optional parameter string query = null
+	TA plugin will send that parameter here
+	>> When we call ToList() below which immediately executes the query we
+	return just the result and in this case var customerDtos is goona be 
+	IQueryable object (so we rename it o customersQuery)- so we can modify this query, 
+	apply the filter and then call ToList to exectute.
+	Then we define another var customerDtos = customersQuery.ToList().Select(Mapper.Map<Customer,CustomerDto>);
+	Above the last var we apply the filter
+	//If we don't have a an empty query
+	if(!String.IsNullOrWhitespace(query))
+		customersQuery = customersQuery.Where(c => c.Name.Contains(query));
