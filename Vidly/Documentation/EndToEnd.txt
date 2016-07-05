@@ -207,7 +207,7 @@ helpers would build traditional html form
 	>> Action attribute is our action but we won't use it
 	>> We also have helper Ajax.BeginForm() - but problem is that it's
 	used to call MVC controllers, not API controllers
-- > ZEN CODING: Cool technique to quickly create markup:
+- > ZEN CODING (ie EMMET): Cool technique to quickly create markup:
 	div.form-group>label+input[type="text"].form-control + TAB
 	(part of web-essentials plugin)
 	//this translates to:
@@ -272,3 +272,28 @@ datasource (like an API))
 	Later we gonna send this vm to our API
 
 - > EXERCISE 5 > Create typeahead plugin for the movies & just display selection in console
+	>> Since one Customer can rent many movies we have to add a List<Movie>
+	we add a placeholder in .cshtml just below movies input div before the submit button:
+	ul#movies.list-group
+	(list-group is BS class for creating lists)
+	>> In our "on" method chained to #movie in Jq we add the following:
+	}).on("typeahead:select", function (e, movie) {
+			$("#movies").append("<li>" + movie.name + "</li>");
+			//Select our movies UL of list-group and append li to it
+			w/ movie name        
+		
+	});
+	>> Here we're manipulating DOM elements which is okay for small projects,
+	otherwise it would be prudent to use FWs that use Data-Binding (Knockout,
+	Angular,React, Vue etc).
+	In this case instead of working directly w/ DOM , we'd bind DOM elements 
+	directly to a model (ie a ViewModel)- It's also easier to Unit-Test.
+	>> After selection we now need a text box - here we can not use
+	jQ .val() method after selection because we have appliead TA plugin on it
+	we have to do it w/ TA (propertyToUpdate,value)
+	$('#movie').typeahead("val","");
+	//Now we want to store this movie in our VM for later sending to the server:
+	We add a new prop in our vm we declater just after $(document).ready
+	this prop is: movieIds: [] // an empty array
+	>>Back in our callback function we set:
+	vm.movieIds.push(movie.id);
