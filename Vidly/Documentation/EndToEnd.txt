@@ -362,3 +362,9 @@ that are matching (since we're not filtering records on the server).
 	at the time we made those entires.
 
 				/*	===	DISPLAYING TOAST NOTIFICATIONS	===	*/
+
+PM> install-package toastr
+Now set it all up in bundle config. (both style and scripts)
+-> In our form:
+	in done we use toastr.success(""); to display success message
+	in fail -||- .error("")
