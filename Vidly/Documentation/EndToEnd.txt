@@ -368,3 +368,56 @@ Now set it all up in bundle config. (both style and scripts)
 -> In our form:
 	in done we use toastr.success(""); to display success message
 	in fail -||- .error("")
+				
+				
+				/*	===	IMPLEMENTING CLIENT-SIDE VALIDATION	===	*/
+
+- > In Bundleconfig we have a separate bundle jQueryVal
+	>> We could merge it w/ lib if we used it in many different places, but
+	let's keep them separated.
+	So in new.cshtml
+	In scripts section we add @Scripts.Render("~/bundles/jqueryval")
+	In Customer textbox we can use standard HTML validation attribute
+	ie use attribute required -> Also: jqueryval understands it 
+- > Now we plugin validation
+	before we submit #newRental form 
+	we reference #newRental and call validate method on it - this plugs
+	in validation into the form
+- > Minor problem: our form will be submitted even if it's not valid -
+	we need to use this code inside our validate method:
+	$("#newRental").validate({
+		//Below configuration object must be 
+		//passed into validate
+		submitHandler: function(){
+			//We paste our ajax method here
+		}
+	});
+- > Now the validation message appears below input box, now we make it red
+	>> We add label.error to field-validation-errot
+	and input.error to .input-validation-error in site.css
+	>> Problem is that if we write anything error message disappears
+	even though it may be a garbage value ! a valid customer
+		>>> To handle this we need a custom validator:
+		>>> Before calling the validate method we'll create a custom validator:
+		$.validator.addMethod("validCustomer",function(){
+			//Make sure that our VM has prop called customerId and
+			//that it has non-zero numeric value
+			return vm.customerId && vm.customerId !== 0; 
+			//we specify error message as a 3rd argument
+		},"Please select a valid customer");
+	>> To apply a custom validator we apply a data attribute like so:
+	//Jq plugin looks for custom attributes that start data-rule
+	data-rule-validCustomer="true"
+
+>EXERCISE:
+Create custom validator so that user has to select at least one movie 
+and plug it into the form
+>> Another problem in validate we no longer have an event(e) argument
+	>> When jQ calles a submitHandler function it passes a reference to
+	our form not a submit event
+	>> To prevent a form from being submitted normally we just return
+	false at the end of submitHandler function - this will prevent the
+	form from being submitted normaly
+>> Even bigger problem, sometimes our validation messages don't work,
+that's because we forgot to add name="customer" & name="movie" to their respective inputs -
+jqval relies on this attribute to do it's job
