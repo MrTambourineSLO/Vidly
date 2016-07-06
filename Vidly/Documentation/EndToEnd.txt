@@ -329,3 +329,36 @@ that are matching (since we're not filtering records on the server).
 	//If we don't have a an empty query
 	if(!String.IsNullOrWhitespace(query))
 		customersQuery = customersQuery.Where(c => c.Name.Contains(query));
+
+
+					/*	===	SUBMITTING THE FORM	===	*/
+						/*	===	CODE REVIEW	===	*/
+
+- > We change GetMovies() method of API in same way as we have GetCustomers() above.
+- > Now we're ready to post a form
+- > We give our form an ID "newRental"
+	>> At bottom of Jq code:
+	//e represents a submit event
+	$("#newRental").submit(function(e){
+		//Prevent submiting it as a traditional HTML form
+		e.preventDefault();
+		$.ajax({
+			url: "/api/newRentals",
+			method: "post",
+			//Below in VM we have customerId & movieIds
+			//which looks exactly as our newRental detail
+			data: vm
+		})//below we handle success and failute scenarios
+		.done(function(){
+			//placeholder
+			console.log("done");
+		})
+		.fail(function(){
+			console.log("fail");
+		});
+	});
+	>> At his point we need to delete all existing rentals if we've submitted
+	any to the DB because our domain model for rental was somewhat different
+	at the time we made those entires.
+
+				/*	===	DISPLAYING TOAST NOTIFICATIONS	===	*/

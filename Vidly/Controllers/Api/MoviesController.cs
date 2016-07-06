@@ -23,10 +23,22 @@ namespace Vidly.Controllers.Api
         }
         //GET
         // /api/movies/
-        public IHttpActionResult GetMovies()
+        // Change IHAR to IEnumerable for input search of Typeahead
+        public IEnumerable<MovieDto> GetMovies(string query = null)
         {
-            var movieDtos = _context.Movies.Include(i => i.Genre).ToList().Select(Mapper.Map<Movie,MovieDto>);
-            return Ok(movieDtos);
+            //Refactor backend for better typeahead ajax functionality
+            //only list movies available
+            var moviesQuery = _context.Movies
+                .Include(i => i.Genre)
+                .Where(m => m.NumberAvailable > 0);
+            //Then if movie has a query value we apply that as well
+            if (!String.IsNullOrWhiteSpace(query))
+                moviesQuery = moviesQuery.Where(m => m.Name.Contains(query));
+                
+            return moviesQuery
+                .ToList()
+                .Select(Mapper.Map<Movie,MovieDto>);
+            
         } 
         //GET
         // /api/movies/id
