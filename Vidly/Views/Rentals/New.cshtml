@@ -92,7 +92,7 @@
             },"You must select at least one movie.");
 
 
-            $("#newRental").validate({
+            var validator = $("#newRental").validate({
                 submitHandler: function() {
                     e.preventDefault();
                     $.ajax({
@@ -102,7 +102,15 @@
                     })
                         .done(function () {
                             toastr.success("Rentals successfully recorded");
-
+                            //Clear the form and validation
+                            $("#customers").typeahead("val", "");
+                            $("#movie").typeahead("val", "");
+                            //Clear li in UL
+                            $("#movies").empty();
+                            //Clear our VM values - reset it
+                            vm = { movieIds: [] };
+                            //Reset our validation
+                            validator.resetForm();
                         })
                         .fail(function () {
                             toastr.error("Something unexpected happened");

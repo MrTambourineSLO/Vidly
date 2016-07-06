@@ -412,6 +412,7 @@ Now set it all up in bundle config. (both style and scripts)
 >EXERCISE:
 Create custom validator so that user has to select at least one movie 
 and plug it into the form
+--------------
 >> Another problem in validate we no longer have an event(e) argument
 	>> When jQ calles a submitHandler function it passes a reference to
 	our form not a submit event
@@ -421,3 +422,12 @@ and plug it into the form
 >> Even bigger problem, sometimes our validation messages don't work,
 that's because we forgot to add name="customer" & name="movie" to their respective inputs -
 jqval relies on this attribute to do it's job
+>> Our JS is a mess w/ no structure, we'll refactor it later.
+>> When we successfully submit form we need to clear the input:
+so on Success we go to customer input field and call typeahead and
+set it's val to empty string, same for movie text box, for list of movies
+we use just .empty() method to clear the li
+	>> Besides that we also have to reset our VM
+	vm = {movieIds:[]};
+	>> We also have to clear our validation:
+	we store result of validation in variable (validator) and call resetForm() on it
