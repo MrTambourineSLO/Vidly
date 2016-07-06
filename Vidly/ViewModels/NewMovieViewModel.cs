@@ -23,6 +23,7 @@ namespace Vidly.ViewModels
         [Range(1, 20)]
         public byte? NumberInStock { get; set; }
 
+        public int NumberAvailable { get; set; }
         //EF's FK by convention
         [Required]
         [Display(Name = "Genres")]
@@ -50,6 +51,7 @@ namespace Vidly.ViewModels
             ReleaseDate = movie.ReleaseDate;
             NumberInStock = movie.NumberInStock;
             GenreId = movie.GenreId;
+            NumberAvailable = movie.NumberInStock;
         }
     }
 }

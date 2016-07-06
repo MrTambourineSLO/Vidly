@@ -30,6 +30,8 @@ namespace Vidly.Models
         [Display(Name = "Number in Stock")]
         [Range(1,20)]
         public byte NumberInStock { get; set; }
+        [Required]
+        public int NumberAvailable { get; set; }
         
         /*Foreign key part*/
         //Navigation property to navigate between types

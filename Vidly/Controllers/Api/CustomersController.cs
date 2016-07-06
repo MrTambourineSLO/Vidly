@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using AutoMapper;
 using Vidly.DTOs;
 using Vidly.Models;
@@ -21,15 +22,20 @@ namespace Vidly.Controllers.Api
             
         }
         //GET /api/customers
-        public IHttpActionResult GetCustomers()
+        public IHttpActionResult GetCustomers(string query = null)
         {
             //Don't forget to cast to list
             //We perform eager loading w/ include from Systam.Data.Entity
-            var customerDtos = _context.Customers
-                .Include(i => i.MembershipType)
+            var customersQuery = _context.Customers
+                .Include(i => i.MembershipType);
+
+            if (!String.IsNullOrWhiteSpace(query))
+                customersQuery=customersQuery.Where(q => q.Name.Contains(query));
+
+            var customerDto=customersQuery
                 .ToList()
                 .Select(Mapper.Map<Customer,CustomerDto>);
-            return Ok(customerDtos);
+            return Ok(customersQuery);
         }
         //GET /api/customers/id
 
@@ -99,6 +105,20 @@ namespace Vidly.Controllers.Api
 
             return Ok();
         }
+        //Input is Customer & Movie ID
+        // Return simple response (don't worry about implementation just yet)
+         // eg: /reviews/5
+        //[HttpGet]
+        //[Route("api/customers/rentmovie/{customerId}/{movieId}")]
+        //public IHttpActionResult RentMovie(int customerId, int movieId)
+        //{
+        //    //Perform check if customerId is valid
+        //    //Perform check if movieId is valid
+        //    //Perform DB updates
+        //    //Return customer info (just a mock example)
+        //    var rentingCustomer = _context.Customers.SingleOrDefault(c => c.Id == customerId);
+        //    return Ok(Mapper.Map<Customer,CustomerDto>(rentingCustomer));
+        //}
         
         
     }

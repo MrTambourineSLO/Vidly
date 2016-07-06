@@ -32,6 +32,7 @@ namespace Vidly.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Rental> Rentals { get; set; } 
         //Include our DbSet in DbContext to include it in migrations
         public DbSet<Customer> Customers { get; set; }
         

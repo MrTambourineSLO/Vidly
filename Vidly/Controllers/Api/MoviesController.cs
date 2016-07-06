@@ -23,10 +23,22 @@ namespace Vidly.Controllers.Api
         }
         //GET
         // /api/movies/
-        public IHttpActionResult GetMovies()
+        // Change IHAR to IEnumerable for input search of Typeahead
+        public IEnumerable<MovieDto> GetMovies(string query = null)
         {
-            var movieDtos = _context.Movies.Include(i => i.Genre).ToList().Select(Mapper.Map<Movie,MovieDto>);
-            return Ok(movieDtos);
+            //Refactor backend for better typeahead ajax functionality
+            //only list movies available
+            var moviesQuery = _context.Movies
+                .Include(i => i.Genre)
+                .Where(m => m.NumberAvailable > 0);
+            //Then if movie has a query value we apply that as well
+            if (!String.IsNullOrWhiteSpace(query))
+                moviesQuery = moviesQuery.Where(m => m.Name.Contains(query));
+                
+            return moviesQuery
+                .ToList()
+                .Select(Mapper.Map<Movie,MovieDto>);
+            
         } 
         //GET
         // /api/movies/id
@@ -42,7 +54,7 @@ namespace Vidly.Controllers.Api
         }
         //POST
         // /api/movies/
-        [System.Web.Mvc.Authorize(Roles = RoleName.CanManageMovies)]
+        [System.Web.Http.Authorize(Roles = RoleName.CanManageMovies)]
         [System.Web.Http.HttpPost]
         public IHttpActionResult CreateMovie(MovieDto movieDto)
         {
@@ -52,14 +64,17 @@ namespace Vidly.Controllers.Api
             }
             //Kreiraj nov movie iz DTO
             var newMovie = Mapper.Map<MovieDto, Movie>(movieDto);
+            //Dodaj NumberAvailable = NumberInStock
+            newMovie.NumberAvailable = newMovie.NumberInStock;
             _context.Movies.Add(newMovie);
             _context.SaveChanges();
             movieDto.Id = newMovie.Id;
+            
             return Created(new Uri(Request.RequestUri +"/"+movieDto.Id ),movieDto );
         }
         //PUT
         // /api/movies/id
-        [System.Web.Mvc.Authorize(Roles = RoleName.CanManageMovies)]
+        [System.Web.Http.Authorize(Roles = RoleName.CanManageMovies)]
         [System.Web.Http.HttpPut]
         public IHttpActionResult EditMovie(int id, MovieDto movieDto)
         {
@@ -79,7 +94,7 @@ namespace Vidly.Controllers.Api
         }
         //DELETE
         // /api/movies/id
-        [System.Web.Mvc.Authorize(Roles = RoleName.CanManageMovies)]
+        [System.Web.Http.Authorize(Roles = RoleName.CanManageMovies)]
         [System.Web.Http.HttpDelete]
         public IHttpActionResult DeleteMovie(int id)
         {

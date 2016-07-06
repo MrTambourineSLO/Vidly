@@ -1,1 +1,433 @@
-﻿			/*	===		BUILDING A FEATURE END-TO-END SISTEMATICALLY	===	*/
+﻿			/*	===	END TO END DEVELOPMENT	===	*/
+
+- > IRL Scenario : Extend Vidly & add the ability to RECORD RENTALS
+- > Before coding we need to UNDERSTAND how this use case works (talking to
+client, who we're working for)
+- > Example: Customer comes to the counter & hands movie to staff member,
+	>> Staff member looks up customer in application & then adds each movie
+	to the list of movies customer is about to rent - that's the end of this
+	transaction
+- > APPROACH: We can start from FRONT||BACK END (it's matter of personal preference.
+Mosh advises starting from BE though - because complexity from frontend can
+leak into backend design.)
+- > BACKEND: we focus on I/O of the application
+	>> INPUT: id of CUSTOMER & MOVIES (how we get to customer info is for now
+	irrelevant)
+	Like making a building - we first focus on big picture - "skeleton" where are
+	tables and chairs is at this point not relevant.
+	>> OUTPUT: No output (we don't give customer a check or order/transaction ID )
+	>> we need ACTION: that frontend is going to call
+		it can either be put (depending if we're returning markup || data) in:
+		>>> MVC CONTROLLER or
+		>>> API CONTROLLER (we're going to use as we have so far
+		it has also advantage - we can build different types of clients that
+		consume this API)
+	=> EXERCISE 1 - We know I/O for this case.
+	Create an API frontend will call when user submits the form for New Rental Use Case:
+	Just create ACTION w/ correct INPUT & OUTPUT - Implementation = empty || simple
+	response
+	 * I created it like this in CustomersController
+	 * The right way was to create a new "NewRentalsController" in Api Controllers
+	 w/ action which accepts New RentalDto (decorated w/ HTTPPOST)
+		>> RentalDto has two props - int CustomerId and List<int> MovieIds
+	>> Implementation of this API
+	>> 1st Look at domain models
+		>>> Does our current domain model support rentals?
+		(We have Movie and Genre model)
+		>>> No? Nothing here describes a rental
+		UML
+		CUSTOMER		---rents--->*		MOVIE
+		CUSTOMER	*<---can be rented---	MOVIE
+		-> Ergo: we need MANY-MANY association between these 2 classes
+		-> The association NEEDS ATTRIBUTES!!!
+		**************
+		*	RENTAL	 *
+		**************
+		|DateRented	 |
+		|DateReturned|
+		|			 |
+		|____________|
+			>> So Association(Rental) needs to know when movie was
+			rented and when it was returned
+			>> Rental is association class in UML - and it's named
+			after association. So if association is "rents" and
+			"can be rented" - association class' name is Rental
+		-> Implementation is actually easy - our Rental class
+		should have properties depicted as well as 2 navigation
+		properties (ergo CUSTOMER and MOVIE) + as per EF every 
+		table needs an ID
+	=> EXERCISE 2 - Add Rental to our Domain Model and use CF migration
+	to bring DB up to date
+
+			/*	===	BUILDING THE SIMPLEST API	===	*/
+
+EXERCISE 2 SOLUTION:
+My solution:
+		public int Id { get; set; }
+        [Required]
+        public int CustomerId { get; set; }
+        [Required]
+        public int MovieId { get; set; }
+        public DateTime DateRented { get; set; }
+        public DateTime DateReturned { get; set; }
+        public Movie Movie { get; set; }
+        public Customer Customer { get; set; }
+Video solution:
+		public int Id { get; set; }
+        public DateTime DateRented { get; set; }
+        public DateTime? DateReturned { get; set; }
+        [Required]
+		public Movie Movie { get; set; }
+        [Required]
+		public Customer Customer { get; set; }
+		-> NOTE: DateReturned is NULLABLE
+		-> NOTE: We didn't ADD IDs but straight up OBJECTS
+		WHY? EF will make sure that DB ACCEPTS REFERENCES (as in FK)
+		FOR THOSE TABLES
+Next: *In ApplicationDbContext we add DbSet of Rental
+	  * Create migration and update db
+	  * Now we're ready to IMPLEMENT an API
+	  : Start a happy path - forget Edge Cases, Validations etc
+	  -> In our action we need to get Customer and Movies based on the IDs
+	  our DTO gives us
+	  -> Then for each movie we need to create a new Rental object and 
+	  get it to a DB
+	=> EXERCISE 3:
+	Implement the simplest API then Use POSTMAN to call it, make sure that
+	you get all movie IDs in a DB
+	(See previous commit for solution - it's commented in the code)
+Next: * In creating a rental we have to take into account AVAILABILTY
+		of the movie
+
+		***************
+		*	MOVIE	  *
+		***************								_______________
+		|NumberInStock|	--------------------------*|	RENTAL	   |
+		|			  |							   |_______________|
+		|			  |
+		|_____________|
+
+		*Does our current DM allow us to track the availability of the movie?
+		-> It does (Ergo- Availability = NumberInStock-ActiveRentals)
+		-> BUT - this would require a lot of calls to DB for calculating 
+		Availability
+		-> Better solution: 
+		*****************
+		*	MOVIE	    *	Initially NumberAvailable is same as number
+		*****************	In stock, but when customer rents we decrease
+		|NumberInStock  |	it by 1. Same for when customer returns it.
+		|			    |
+		|NumberAvailable|			  
+		|_______________|
+
+=> EXERCISE 4:
+	Update availability of the movies - TIP: Add this new prop to DM, update-db
+	modify logic in our Action
+	-> We have to add new property NumberAvailable to Movie DM
+	-> We add migration and in Up();
+	we add 
+	 Sql("UPDATE Movies SET NumberAvailable = NumberInStock");
+	 to set NumberAvailable automatically for existing records.
+	 In MovieController's Save method add NumberAvailable = NumberInStock on an
+	 instance of the movie.
+	 Also in Api MovieController's Create Movie make sure to initialize that value.
+	 In api's for loop we add movie.NumberAvailable--;
+
+
+				/*	===	EDGE CASES	===	*/
+
+- > 4Edge Cases:
+*CustomerId is invalid
+*No MovieIds
+*1||> MovieIds are invalid
+*1 || > Movies are not available
+
+- > Here we have 2 POV (no right || wrong)
+*Defensive
+- 1st EC - Customer is not valid:
+	>> We should change Single to SingleOrDefault and
+	then check if Customer == null and return 
+	BadRequest("Customer not available")
+- 2nd EC - We have no Movies in our DTO
+	if(newRental.MovieIds.Count == 0){
+		return BadRequest("No movie Ids have been given")
+	}
+	PS - This case should be first, because it's no use querying
+	DB if we don't have a customer
+- 3rd - One ||> Movies are not available
+	-1st we get those movies like so:
+	var movies = _context.Movies.Where(m => rentalDto.MovieIds.Contains(m.Id)).ToList();
+	then
+	if(movies.Count != rentalDto.MovieIds.Count){
+		return BadRequest("One or more movie(s) has a bad Id")
+	}
+- 4th - Movie's not available
+	in foreach block we already have, at the very beginning
+	if(movie.NumberAvailable <= 0){
+		return BadRequest("Movie is not available")
+	}
+
+*Optimistic
+(Defensive API is useful if it's public and used by a lot of people)
+Defensive adds whole bunch of if statements and pollutes our code
+Our API is not public, it's just there so that frontend can call it.
+- 1st EC - Customer is not valid:
+	- We use Single as before and erase if block
+- 2nd EC - We have no Movies in our DTO
+	- We won't do an extra check on top
+- 3rd - One ||> Movies are not available
+	- Interesting edge case - hacker can call our api 100 times
+	and make it unavailable
+- 4th - Movie's not available
+	- We won't do an extra check.
+
+			/*	===	BUILDING THE FRONT-END	===	*/
+
+- > A different way to build forms, previously we built Html helper
+methods such as BeginForm, LabelFor &c
+	>> In previous (traditional HTML form) we used user has to wait
+	for server to respond and browser can go blank for few seconds
+	>> We'll use AJAX - we'll call the serveer ASYNC in the background
+- > When User clicks a lin we call server in backgrund, get the data for
+target page, generate markup on client and use JS to refresh the content area.
+- > Every browser has object called XMLHttpRequest (XHR) which allows us to call
+server async in background - w/o posting the page to the server using form.
+jQuery AJAX is abstraction over this object and makes it easier:
+$.ajax(url)
+	.done(function(result){
+	//Do something w/ the result
+	});
+- > These days we often get only data from server and generate HTML on client
+(that's why we use it when working w/ APIs)
+
+-> 1st we add new "RentalsController" to our controllers.
+- > Then we create a view w/ R#
+- > We won't create Html helpers but just raw html, becasue
+helpers would build traditional html form
+	>> Action attribute is our action but we won't use it
+	>> We also have helper Ajax.BeginForm() - but problem is that it's
+	used to call MVC controllers, not API controllers
+- > ZEN CODING (ie EMMET): Cool technique to quickly create markup:
+	div.form-group>label+input[type="text"].form-control + TAB
+	(part of web-essentials plugin)
+	//this translates to:
+	/*
+		A want a div(DIV) with a class(.) form-group(FORM-GROUP)
+		inside this div(>) I want to have a label (LABEL) and next to(+)
+		this label I want to have an input(INPUT) with the attribute type set
+		to text([type="text"] and class form-control(.form-control)
+	*/
+	We manually set label to customer
+	-then below this div still in form
+	div.form-group>label+input[type="text"].form-control 
+	label= movie
+	-Finally below:
+	button.btn.btn-primary
+	Text = submit
+- > Later we'll add autocompletion
+- > Now add link to this form on navigation bar (_Navbar.cshtml)
+
+
+				/*	===	ADDING AUTO-COMPLETION	===	*/
+
+- > jQ plugin Type-Ahead by Twitter
+PM> install-package Twitter.Typeahead
+BundleConfig - add /Scripts/typeahead.bundle.js
+- > Now we need to fetch some CSS from their github examples because non are 
+included in the bundle
+> There we view page source go to style and copy everything
+between .typeahead (w background color) down to .tt-suggestion p
+ >>Content - Add - StyleSheet "typeahead.css"- paste
+ >> Include it in style bundles
+ - > Now we're done w/ plumbing and we have to use a plugin
+> On examples page we click on "Remote" (ie example of typeahead w/ remote
+datasource (like an API))
+	>> Copy & Paste JS 
+	>> In our view in scripts section we use standard Jq initialization and 
+	inside we paste this code.
+	We rename the functions appropriately:
+	*Bloodhound is the suggestion engine behind typeahead - it encapsulates all
+	business logic for autocompletion
+	*datumTokenizer prop: essentialy - look at value property of customers and use
+	whitespace to tokenize them - these tokens are required for bloodhound
+		- We change "value" to "name"
+	*prefetch prop is used for providing data upon initialization and prevents
+	additional requests to server - but we'll delete it because we're not gonna use it.
+	*We change the remote url to /api/customers?query=%QUERY - this is varaible
+	'specified in the wildcard' - what user types in the textbox will be placed there at 
+	runtime
+		W/ this later we can filter our customers and return those who match the query
+	*Next is a reference to our textbox, we change it to #customer ie our textbox - we also
+	give our input ID of customer
+	*First argument of TA method is now null but we can pass an object and configure the
+	behaviour of TA - example {minLength: 3, highlight: true}
+	*We change name property to "Customers"
+	*Display is what prop of our customers we should display in suggestion list (ie "name")
+	-> Next we need to make sure that when user selects some name from AC dropdown
+	that it can be save somewhere so we chain On method and watch "typeahead:select" evenr as per
+	documentation of TA. Then we provide callback as second argument w/ 2 params e(for the event)
+	and customer which is the selected customer - now we have to store it somewhere.
+	At top we make new var vm = {}; (vm as in viewmodel)
+	In callback from before we set vm.CustomerId = customer.Id;
+	Later we gonna send this vm to our API
+
+- > EXERCISE 5 > Create typeahead plugin for the movies & just display selection in console
+	>> Since one Customer can rent many movies we have to add a List<Movie>
+	we add a placeholder in .cshtml just below movies input div before the submit button:
+	ul#movies.list-group
+	(list-group is BS class for creating lists)
+	>> In our "on" method chained to #movie in Jq we add the following:
+	}).on("typeahead:select", function (e, movie) {
+			$("#movies").append("<li>" + movie.name + "</li>");
+			//Select our movies UL of list-group and append li to it
+			w/ movie name        
+		
+	});
+	>> Here we're manipulating DOM elements which is okay for small projects,
+	otherwise it would be prudent to use FWs that use Data-Binding (Knockout,
+	Angular,React, Vue etc).
+	In this case instead of working directly w/ DOM , we'd bind DOM elements 
+	directly to a model (ie a ViewModel)- It's also easier to Unit-Test.
+	>> After selection we now need a text box - here we can not use
+	jQ .val() method after selection because we have appliead TA plugin on it
+	we have to do it w/ TA (propertyToUpdate,value)
+	$('#movie').typeahead("val","");
+	//Now we want to store this movie in our VM for later sending to the server:
+	We add a new prop in our vm we declater just after $(document).ready
+	this prop is: movieIds: [] // an empty array
+	>>Back in our callback function we set:
+	vm.movieIds.push(movie.id);
+
+				/*	===	IMPROVING THE LOOK & FEEL	===	*/
+
+- > Inline Textboxes should be on separate line, if we explore element:
+when we apply twitter-typeahead it puts both elements in a <span>
+(we can see that in reallity we have like 3 stacked textboxes).
+	>> From documentation we can see that they wrap this textbox in another
+	Div that has position:relative;
+	>>So above that input we make a new div w/ class tt-container,
+	same w/ a autotext box input
+	>> In typeahead.css we add this new class and give it position:relative;
+- > Another issue is that movies are appearing as bulletpoints 
+When we appended li we forgot a BS class list-group-item so we add it
+	>> Width is too wide though, so we use BS grid system to limit the
+	>> Around UL we add div.row>div.col-md-4.col-sm-4 (so for medium & small devices)
+	
+					/*	===	FILTERING RECORDS	===	*/
+
+- > Right now if we type something we see also some other records besides those 
+that are matching (since we're not filtering records on the server).
+- > In VS - CustomersController(api)
+	>> GetCustomers() action we add an optional parameter string query = null
+	TA plugin will send that parameter here
+	>> When we call ToList() below which immediately executes the query we
+	return just the result and in this case var customerDtos is goona be 
+	IQueryable object (so we rename it o customersQuery)- so we can modify this query, 
+	apply the filter and then call ToList to exectute.
+	Then we define another var customerDtos = customersQuery.ToList().Select(Mapper.Map<Customer,CustomerDto>);
+	Above the last var we apply the filter
+	//If we don't have a an empty query
+	if(!String.IsNullOrWhitespace(query))
+		customersQuery = customersQuery.Where(c => c.Name.Contains(query));
+
+
+					/*	===	SUBMITTING THE FORM	===	*/
+						/*	===	CODE REVIEW	===	*/
+
+- > We change GetMovies() method of API in same way as we have GetCustomers() above.
+- > Now we're ready to post a form
+- > We give our form an ID "newRental"
+	>> At bottom of Jq code:
+	//e represents a submit event
+	$("#newRental").submit(function(e){
+		//Prevent submiting it as a traditional HTML form
+		e.preventDefault();
+		$.ajax({
+			url: "/api/newRentals",
+			method: "post",
+			//Below in VM we have customerId & movieIds
+			//which looks exactly as our newRental detail
+			data: vm
+		})//below we handle success and failute scenarios
+		.done(function(){
+			//placeholder
+			console.log("done");
+		})
+		.fail(function(){
+			console.log("fail");
+		});
+	});
+	>> At his point we need to delete all existing rentals if we've submitted
+	any to the DB because our domain model for rental was somewhat different
+	at the time we made those entires.
+
+				/*	===	DISPLAYING TOAST NOTIFICATIONS	===	*/
+
+PM> install-package toastr
+Now set it all up in bundle config. (both style and scripts)
+-> In our form:
+	in done we use toastr.success(""); to display success message
+	in fail -||- .error("")
+				
+				
+				/*	===	IMPLEMENTING CLIENT-SIDE VALIDATION	===	*/
+
+- > In Bundleconfig we have a separate bundle jQueryVal
+	>> We could merge it w/ lib if we used it in many different places, but
+	let's keep them separated.
+	So in new.cshtml
+	In scripts section we add @Scripts.Render("~/bundles/jqueryval")
+	In Customer textbox we can use standard HTML validation attribute
+	ie use attribute required -> Also: jqueryval understands it 
+- > Now we plugin validation
+	before we submit #newRental form 
+	we reference #newRental and call validate method on it - this plugs
+	in validation into the form
+- > Minor problem: our form will be submitted even if it's not valid -
+	we need to use this code inside our validate method:
+	$("#newRental").validate({
+		//Below configuration object must be 
+		//passed into validate
+		submitHandler: function(){
+			//We paste our ajax method here
+		}
+	});
+- > Now the validation message appears below input box, now we make it red
+	>> We add label.error to field-validation-errot
+	and input.error to .input-validation-error in site.css
+	>> Problem is that if we write anything error message disappears
+	even though it may be a garbage value ! a valid customer
+		>>> To handle this we need a custom validator:
+		>>> Before calling the validate method we'll create a custom validator:
+		$.validator.addMethod("validCustomer",function(){
+			//Make sure that our VM has prop called customerId and
+			//that it has non-zero numeric value
+			return vm.customerId && vm.customerId !== 0; 
+			//we specify error message as a 3rd argument
+		},"Please select a valid customer");
+	>> To apply a custom validator we apply a data attribute like so:
+	//Jq plugin looks for custom attributes that start data-rule
+	data-rule-validCustomer="true"
+
+>EXERCISE:
+Create custom validator so that user has to select at least one movie 
+and plug it into the form
+--------------
+>> Another problem in validate we no longer have an event(e) argument
+	>> When jQ calles a submitHandler function it passes a reference to
+	our form not a submit event
+	>> To prevent a form from being submitted normally we just return
+	false at the end of submitHandler function - this will prevent the
+	form from being submitted normaly
+>> Even bigger problem, sometimes our validation messages don't work,
+that's because we forgot to add name="customer" & name="movie" to their respective inputs -
+jqval relies on this attribute to do it's job
+>> Our JS is a mess w/ no structure, we'll refactor it later.
+>> When we successfully submit form we need to clear the input:
+so on Success we go to customer input field and call typeahead and
+set it's val to empty string, same for movie text box, for list of movies
+we use just .empty() method to clear the li
+	>> Besides that we also have to reset our VM
+	vm = {movieIds:[]};
+	>> We also have to clear our validation:
+	we store result of validation in variable (validator) and call resetForm() on it
