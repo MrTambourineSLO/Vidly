@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using Vidly.Models;
+using Vidly.Secured;
 
 namespace Vidly
 {
@@ -53,10 +54,10 @@ namespace Vidly
             //app.UseTwitterAuthentication(
             //   consumerKey: "",
             //   consumerSecret: "");
-            // TODO: Add secret & appId to static class and ignore it in git.
+            
             app.UseFacebookAuthentication(
-               appId: "***REMOVED***",
-               appSecret: "***REMOVED***");
+               appId: IdsAndSecrets.FacebookId,
+               appSecret: IdsAndSecrets.FacebookSecret);
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
