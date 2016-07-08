@@ -54,7 +54,7 @@ namespace Vidly
             //app.UseTwitterAuthentication(
             //   consumerKey: "",
             //   consumerSecret: "");
-            
+            //Use static class IdsAndSecrets's FacebookId and FacebookSecret to retrun appropriate strings 
             app.UseFacebookAuthentication(
                appId: IdsAndSecrets.FacebookId,
                appSecret: IdsAndSecrets.FacebookSecret);
